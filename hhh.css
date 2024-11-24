@@ -1,0 +1,237 @@
+/* تنسيق عام */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    direction: rtl;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: #fcfcfc;
+}
+
+/* شريط التنقل */
+.navbar {
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgb(0, 0, 0);
+    padding: 10px 20px;
+}
+
+.navbar ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+
+}
+
+.navbar li {
+    margin: 0 15px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #000000;
+    font-size: 16px;
+}
+
+.navbar .btn-register {
+    background-color: #ffffff;
+    color: rgb(247, 244, 244);
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.navbar .btn-register:hover {
+    background-color: #c93636;
+}
+
+/* العنوان الرئيسي */
+.hero {
+    text-align: center;
+    padding: 50px 20px;
+    background-color: #ffffff;
+}
+
+.hero h1 {
+    font-size: 36px;
+    color: #000000; /* لون بنفسجي */
+}
+
+.hero p {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #000000;
+}
+
+/* معرض الصور */
+.carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px 0;
+}
+
+.carousel-container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.carousel-container .images {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-container img {
+    width: 300px;
+    height: 200px;
+    margin: 0 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgb(0, 0, 0);
+}
+
+.carousel-container .prev-btn,
+.carousel-container .next-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0a71eeef;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.carousel-container .prev-btn {
+    left: -20px;
+}
+
+.carousel-container .next-btn {
+    right: -20px;
+}
+
+.carousel-container .prev-btn:hover,
+.carousel-container .next-btn:hover {
+    background-color: #fdfafa;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.register-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.register-btn i {
+    margin-left: 5px;
+
+}
+.homee-btn {
+    position: absolute;
+    top: 10px;
+    right: 30px; /* تم تعديلها لتكون في أعلى اليمين */
+    font-size: 30px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.homee-btn i {
+    margin-left: 5px;
+}
+
+.hom11-btn {
+    position: absolute;
+    top: 10px;
+    left: 46%;
+    transform: translateX(-160%); /* لتوسيط الزر أفقياً */
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: rgb(0, 255, 204);
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.hom22-btn {
+    position: absolute;
+    top: 10px;
+    left: 55%; /* تحريك الزر لليمين قليلاً */
+    transform: translateX(-120%); /* لتوسيط الزر بالنسبة للنقطة المحددة */
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.hom33-btn {
+    position: absolute;
+    top: 10px;
+    left: 60%; /* تحريك الزر لليمين قليلاً */
+    transform: translateX(-40%); /* لتوسيط الزر بالنسبة للنقطة المحددة */
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.hom44-btn {
+    position: absolute;
+    top: 10px;
+    left: 65%; /* تحريك الزر لليمين قليلاً */
+    transform: translateX(30%); /* لتوسيط الزر بالنسبة للنقطة المحددة */
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.hom55-btn {
+    position: absolute;
+    top: 10px;
+    left: 70%; /* تحريك الزر لليمين قليلاً */
+    transform: translateX(91%); /* لتوسيط الزر بالنسبة للنقطة المحددة */
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+.register-btn22 {
+    position: absolute;
+    top: 10px;
+    left: 4.5cm;
+    font-size: 20px;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    padding: 11px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.register-btn i{
+    margin-left: 5px;
+
+}
+    

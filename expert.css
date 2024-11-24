@@ -1,0 +1,210 @@
+/* ملف styles.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    direction: rtl;
+}
+
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+/* تصميم القسم الأيسر */
+.left-section {
+    flex: 1;
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo {
+    width: 80px;
+    height: 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+}
+
+.logo div {
+    width: 20px;
+    height: 20px;
+    background-color: white;
+}
+
+.tagline {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* تصميم القسم الأيمن */
+.right-section {
+    background: linear-gradient(135deg, #003b73, #1c658c);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #000000;
+}
+
+/* تصميم الحقول */
+form {
+    width: 100%;
+    max-width: 400px;
+}
+
+form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.privacy-policy {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.privacy-policy a {
+    color: #4c82e6;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #eeeeee;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #000000;
+}
+
+.footer-text {
+    font-size: 0.9rem;
+    margin-top: 10px;
+}
+
+.footer-text a {
+    color: #2b4d8c;
+    text-decoration: none;
+}
+/* تأثير Fade-In عند تحميل الصفحة */
+.left-section, .right-section {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn 1s ease-out forwards;
+}
+
+.left-section {
+    animation-delay: 0.2s; /* تأخير بسيط للقسم الأيسر */
+}
+
+.right-section {
+    animation-delay: 0.5s; /* تأخير بسيط للقسم الأيمن */
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.logo {
+    width: 80px;
+    height: 80px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 5px;
+    animation: bounce 2s infinite ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #005bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #0045cc;
+    transform: scale(1.05); /* زيادة الحجم بنسبة 5% */
+}
+.left-section::before {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 150px;
+    height: 150px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    opacity: 0.2;
+    animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+h2 {
+    opacity: 0;
+    transform: translateX(50px);
+    animation: slideIn 1s ease-out forwards;
+    animation-delay: 0.7s;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
