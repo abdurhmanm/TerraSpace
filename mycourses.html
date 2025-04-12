@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دوراتي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white p-6">
+    <div class="container mx-auto max-w-6xl">
+        <button onclick="window.location.href='cor.html'" class="mb-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <i class="fas fa-arrow-right ml-2"></i>
+            العودة إلى قائمة الدورات
+        </button>
+
+        <h1 class="text-2xl font-bold mb-6">دوراتي</h1>
+        
+        <div id="my-courses" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- سيتم ملء هذا القسم بالدورات المسجل فيها -->
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.appspot.com",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // التحقق من حالة المستخدم وتحميل الدورات
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadUserCourses();
+            } else {
+                window.location.href = 'cor.html';
+            }
+        });
+
+        // تحديث دالة loadUserCourses
+        async function loadUserCourses() {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    console.log('لم يتم تسجيل الدخول');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                console.log('تحميل الدورات للمستخدم:', user.uid);
+
+                // جلب تسجيلات الدورات للمستخدم
+                const registrations = await db.collection('registrations')
+                    .where('userId', '==', user.uid)
+                    .where('status', '==', 'active')
+                    .get();
+
+                const coursesContainer = document.getElementById('my-courses');
+
+                if (registrations.empty) {
+                    coursesContainer.innerHTML = `
+                        <div class="col-span-3 text-center py-10">
+                            <p class="text-gray-400 mb-4">لم تقم بالتسجيل في أي دورة بعد</p>
+                            <button onclick="window.location.href='cor.html'" 
+                                    class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                استعرض الدورات المتاحة
+                            </button>
+                        </div>
+                    `;
+                    return;
+                }
+
+                console.log('تم العثور على التسجيلات:', registrations.size);
+                const coursesHTML = [];
+
+                for (const reg of registrations.docs) {
+                    const regData = reg.data();
+                    console.log('معالجة تسجيل الدورة:', regData.courseId);
+                    
+                    try {
+                        const courseDoc = await db.collection('courses')
+                            .doc(regData.courseId)
+                            .get();
+
+                        if (courseDoc.exists) {
+                            const course = courseDoc.data();
+                            console.log('تم العثور على بيانات الدورة:', course.title);
+
+                            coursesHTML.push(`
+                                <div class="bg-gray-800 rounded-lg p-6">
+                                    <div class="mb-2">
+                                        <span class="bg-blue-500 text-xs px-2 py-1 rounded-full">
+                                            ${course.category || 'عام'}
+                                        </span>
+                                        <span class="bg-green-600 text-xs px-2 py-1 rounded-full mr-1">مسجل</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold mb-2">${course.title}</h3>
+                                    <p class="text-gray-400 mb-2">المدرب: ${course.instructor || course.coach}</p>
+                                    <p class="text-gray-400 mb-4">${course.description || ''}</p>
+                                    
+                                    <div class="flex justify-between items-center mb-4">
+                                        <div>
+                                            <span class="text-yellow-400">⭐ ${course.rating || '0'}</span>
+                                            <span class="text-gray-400 text-sm">(${course.reviews || '0'})</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <button onclick="window.location.href='course-view.html?id=${regData.courseId}'" 
+                                            class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full">
+                                        <i class="fas fa-play-circle ml-2"></i>
+                                        متابعة الدورة
+                                    </button>
+                                </div>
+                            `);
+                        } else {
+                            console.error('لم يتم العثور على الدورة:', regData.courseId);
+                        }
+                    } catch (err) {
+                        console.error('خطأ في جلب بيانات الدورة:', err);
+                    }
+                }
+
+                if (coursesHTML.length > 0) {
+                    coursesContainer.innerHTML = coursesHTML.join('');
+                } else {
+                    coursesContainer.innerHTML = `
+                        <div class="col-span-3 text-center py-10">
+                            <p class="text-gray-400">حدث خطأ في تحميل الدورات. يرجى المحاولة مرة أخرى لاحقاً.</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('خطأ في loadUserCourses:', error);
+                alert('حدث خطأ في تحميل الدورات: ' + error.message);
+            }
+        }
+    </script>
+
+    <script type="text/plain" id="firestore-rules">
+       
+    </script>
+</body>
+</html>

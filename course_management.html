@@ -1,0 +1,143 @@
+
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الدورات | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">إدارة الدورات</h1>
+            <p class="text-gray-400">إدارة وتنظيم دوراتك التعليمية</p>
+        </div>
+
+        <!-- أزرار التحكم -->
+        <div class="flex flex-wrap gap-4 justify-between items-center mb-8">
+            <div class="flex gap-4">
+                <button onclick="filterCourses('all')" 
+                        class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                    جميع الدورات
+                </button>
+                <button onclick="filterCourses('published')" 
+                        class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                    المنشورة
+                </button>
+                <button onclick="filterCourses('draft')" 
+                        class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                    المسودات
+                </button>
+            </div>
+            <a href="add_course.html" 
+               class="bg-gradient-to-r from-[#46b3e6] to-[#2c6eaf] text-white px-6 py-2 rounded-lg hover:from-[#2c6eaf] hover:to-[#1d4e80] transition-all">
+                <i class="fas fa-plus-circle ml-2"></i>
+                إضافة دورة جديدة
+            </a>
+        </div>
+
+        <!-- قائمة الدورات -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="bg-[#2a2a2a] rounded-lg shadow-xl overflow-hidden course-card" 
+                 data-status="<?php echo htmlspecialchars($course['status']); ?>">
+                <div class="relative">
+                    <!-- صورة الدورة -->
+                    <div class="h-48 bg-[#3a3a3a]"></div>
+                    <!-- حالة الدورة -->
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 rounded-full text-sm <?php 
+                            echo $course['status'] === 'published' ? 'bg-green-500' : 'bg-yellow-500'; 
+                        ?>">
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-[#46b3e6] mb-2">
+                    </h3>
+                    <p class="text-gray-400 mb-4 line-clamp-2">
+                    </p>
+                    <div class="flex justify-between items-center text-sm text-gray-400 mb-4">
+                        <span>
+                            <i class="fas fa-clock ml-1"></i>
+                        </span>
+                        <span>
+                            <i class="fas fa-user-graduate ml-1"></i>
+                        </span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editCourse(<?php echo $course['id']; ?>)" 
+                                class="flex-1 bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#46b3e6] hover:text-white transition-all">
+                            <i class="fas fa-edit ml-1"></i>تعديل
+                        </button>
+                        <button onclick="confirmDelete(<?php echo $course['id']; ?>)" 
+                                class="flex-1 bg-[#3a3a3a] text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white transition-all">
+                            <i class="fas fa-trash-alt ml-1"></i>حذف
+                        </button>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+
+    <script>
+        function filterCourses(status) {
+            const cards = document.querySelectorAll('.course-card');
+            cards.forEach(card => {
+                if (status === 'all' || card.dataset.status === status) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function editCourse(courseId) {
+            window.location.href = `edit_course.php?id=${courseId}`;
+        }
+
+        function confirmDelete(courseId) {
+            if (confirm('هل أنت متأكد من حذف هذه الدورة؟')) {
+                fetch('delete_course.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: courseId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('تم حذف الدورة بنجاح', 'success');
+                        document.querySelector(`[data-course-id="${courseId}"]`).remove();
+                    } else {
+                        showAlert(data.message || 'فشل حذف الدورة', 'error');
+                    }
+                })
+                .catch(error => showAlert('حدث خطأ أثناء الحذف', 'error'));
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `fixed top-4 right-4 p-4 rounded-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white z-50`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 3000);
+        }
+    </script>
+</body>
+</html>

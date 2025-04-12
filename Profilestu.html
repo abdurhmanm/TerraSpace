@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج المعلومات الشخصية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* تنسيق الصفحة */
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            font-family: 'Tajawal', 'Cairo', sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 6px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message {
+            font-size: 18px;
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            max-width: 250px;
+            margin: 20px auto 0;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="welcome-message" id="welcomeMessage">مرحباً!</div>
+        <button class="btn" onclick="logout()">تسجيل الخروج</button>
+    </div>
+
+    <div class="container">
+        <h2>نموذج المعلومات الشخصية</h2>
+
+        <div class="form-section">
+            <div class="form-group">
+                <label>اسم المستخدم</label>
+                <input type="text" id="username" placeholder="اسم المستخدم" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="example@domain.com" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>رقم الجوال</label>
+                <input type="tel" id="phone" placeholder="05xxxxxxxx" readonly>
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهوية الوطنية/الإقامة</label>
+                <input type="text" id="idNumber" placeholder="رقم الهوية/الإقامة" readonly>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.appspot.com",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // جلب بيانات المستخدم
+        document.addEventListener('DOMContentLoaded', async function() {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+
+                            // تعبئة الحقول ببيانات المستخدم
+                            document.getElementById('username').value = userData.firstname || '';
+                            document.getElementById('email').value = userData.email || '';
+                            document.getElementById('phone').value = userData.phone || '';
+                            document.getElementById('idNumber').value = userData.idNumber || '';
+
+                            // عرض رسالة الترحيب
+                            document.getElementById('welcomeMessage').textContent = `مرحباً، ${userData.firstname}!`;
+                        } else {
+                            alert('لم يتم العثور على بيانات المستخدم.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
+                        alert('حدث خطأ أثناء جلب بيانات المستخدم.');
+                    }
+                } else {
+                    // إذا لم يكن المستخدم مسجلاً الدخول، إعادة التوجيه إلى صفحة تسجيل الدخول
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+
+        // تسجيل الخروج
+        function logout() {
+            auth.signOut()
+                .then(() => {
+                    window.location.href = 'login.html';
+                })
+                .catch((error) => {
+                    console.error('Error during logout:', error);
+                });
+        }
+    </script>
+
+    <script type="text/javascript">
+        const firestoreRules = `rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /users/{userId} {
+              allow read: if request.auth != null && request.auth.uid == userId;
+            }
+          }
+        }`;
+        console.log(firestoreRules);
+    </script>
+</body>
+</html>

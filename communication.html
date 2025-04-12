@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج التواصل - منصة تيرا سبيس</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* إعادة ضبط عامة وخطوط */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4e8ec);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        /* حاوية النموذج */
+        .form-container {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            overflow: hidden;
+            padding: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .form-container:hover {
+            transform: translateY(-5px);
+        }
+
+        /* رأس النموذج */
+        .form-header {
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .form-header h2 {
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .form-header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        /* نموذج */
+        form {
+            padding: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #333;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: left 15px center;
+            background-size: 15px;
+            padding-left: 40px;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        /* أيقونات للحقول */
+        .input-icon {
+            position: absolute;
+            top: 36px;
+            right: 15px;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+
+        input:focus + .input-icon,
+        select:focus ~ .input-icon,
+        textarea:focus + .input-icon {
+            color: #3498db;
+        }
+
+        /* زر الإرسال */
+        .submit-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #2980b9, #1e2a36);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn i {
+            margin-right: 8px;
+        }
+
+        /* التأثير عند التركيز والخطأ */
+        input:required:invalid,
+        select:required:invalid,
+        textarea:required:invalid {
+            border-color: #e0e0e0;
+        }
+
+        input:focus:required:invalid,
+        select:focus:required:invalid,
+        textarea:focus:required:invalid {
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+
+        /* التصميم المتجاوب */
+        @media (max-width: 600px) {
+            .form-container {
+                width: 90%;
+            }
+
+            .form-header {
+                padding: 20px;
+            }
+
+            form {
+                padding: 20px;
+            }
+
+            input, select, textarea {
+                padding: 10px 12px;
+                font-size: 0.95rem;
+            }
+
+            .submit-btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+        }
+
+        /* وسوم المساعدة */
+        .help-text {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus ~ .help-text,
+        select:focus ~ .help-text,
+        textarea:focus ~ .help-text {
+            color: #3498db;
+        }
+
+        /* تأثير إضافي للنموذج */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-container {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* شريط التقدم في النموذج */
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #3498db, #2c3e50);
+            transition: width 0.3s ease;
+            border-radius: 3px;
+        }
+
+        /* تأثير الريبل عند النقر على الزر */
+        .submit-btn .ripple {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h2>تواصل معنا</h2>
+            <p>يسعدنا استقبال استفساراتك واقتراحاتك</p>
+        </div>
+
+        <form action="#" method="POST" id="contactForm">
+            <div class="progress-bar">
+                <div class="progress" id="formProgress"></div>
+            </div>
+
+            <div class="input-group">
+                <label for="name">الاسم الكامل <span style="color: #e74c3c;">*</span></label>
+                <input type="text" id="name" name="name" required autocomplete="name">
+                <i class="fas fa-user input-icon"></i>
+                <div class="help-text">يرجى إدخال الاسم الكامل</div>
+            </div>
+
+            <div class="input-group">
+                <label for="email">البريد الإلكتروني <span style="color: #e74c3c;">*</span></label>
+                <input type="email" id="email" name="email" required autocomplete="email">
+                <i class="fas fa-envelope input-icon"></i>
+                <div class="help-text">نحتاج إلى بريدك الإلكتروني للرد على استفسارك</div>
+            </div>
+
+            <div class="input-group">
+                <label for="phone">رقم الهاتف (اختياري)</label>
+                <input type="tel" id="phone" name="phone" autocomplete="tel">
+                <i class="fas fa-phone input-icon"></i>
+            </div>
+
+            <div class="input-group">
+                <label for="issue">نوع المشكلة <span style="color: #e74c3c;">*</span></label>
+                <select id="issue" name="issue" required>
+                    <option value="" disabled selected>اختر نوع المشكلة</option>
+                    <option value="technical">مشكلة تقنية</option>
+                    <option value="account">مشكلة في الحساب</option>
+                    <option value="payment">مشكلة في الدفع</option>
+                    <option value="content">مشكلة في المحتوى</option>
+                    <option value="suggestion">اقتراح تحسين</option>
+                    <option value="other">أخرى</option>
+                </select>
+                <i class="fas fa-exclamation-circle input-icon"></i>
+                <div class="help-text">اختر الفئة الأقرب لاستفسارك</div>
+            </div>
+
+            <div class="input-group">
+                <label for="description">تفاصيل المشكلة <span style="color: #e74c3c;">*</span></label>
+                <textarea id="description" name="description" required></textarea>
+                <i class="fas fa-comment input-icon"></i>
+                <div class="help-text">يرجى وصف المشكلة بالتفصيل لمساعدتنا في حلها بشكل أسرع</div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                <i class="fas fa-paper-plane"></i>
+                <span>إرسال الطلب</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('contactForm');
+            const inputs = form.querySelectorAll('input, select, textarea');
+            const progress = document.getElementById('formProgress');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // تحديث شريط التقدم
+            function updateProgress() {
+                let filledInputs = 0;
+                let requiredInputs = 0;
+                
+                inputs.forEach(input => {
+                    if (input.required) {
+                        requiredInputs++;
+                        if (input.value.trim() !== '') {
+                            filledInputs++;
+                        }
+                    }
+                });
+                
+                const percentage = (filledInputs / requiredInputs) * 100;
+                progress.style.width = `${percentage}%`;
+            }
+            
+            // تأثير الريبل عند النقر على الزر
+            submitBtn.addEventListener('click', function(e) {
+                const x = e.clientX - e.target.getBoundingClientRect().left;
+                const y = e.clientY - e.target.getBoundingClientRect().top;
+                
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                ripple.style.top = `${y}px`;
+                ripple.style.left = `${x}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+            
+            // إضافة مستمعي الأحداث للحقول
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+            
+            // التحقق من النموذج قبل الإرسال
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (input.required && input.value.trim() === '') {
+                        isValid = false;
+                        input.classList.add('error');
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+                
+                if (isValid) {
+                    // هنا يمكن إضافة الكود لإرسال النموذج فعليًا
+                    alert('تم إرسال النموذج بنجاح! سنتواصل معك قريبًا.');
+                    form.reset();
+                    progress.style.width = '0%';
+                } else {
+                    alert('يرجى ملء جميع الحقول المطلوبة.');
+                }
+            });
+            
+            // تحديث التقدم عند تحميل الصفحة
+            updateProgress();
+        });
+    </script>
+</body>
+</html>

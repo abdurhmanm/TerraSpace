@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دوراتي | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- رسائل التنبيه -->
+    <div id="alert" class="fixed top-4 right-4 hidden">
+        <div class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg"></div>
+    </div>
+
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">دوراتي</h1>
+            <p class="text-gray-400">إدارة وعرض جميع الدورات الخاصة بك</p>
+        </div>
+
+        <!-- زر إضافة دورة جديدة -->
+        <div class="mb-8 text-center">
+            <a href="add_course.html" 
+               class="inline-flex items-center bg-gradient-to-r from-[#46b3e6] to-[#2c6eaf] text-white px-6 py-3 rounded-lg hover:from-[#2c6eaf] hover:to-[#1d4e80] transition-all">
+                <i class="fas fa-plus-circle ml-2"></i>
+                إضافة دورة جديدة
+            </a>
+        </div>
+
+        <!-- عرض الدورات -->
+        <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- نموذج بطاقة الدورة -->
+            <div class="bg-[#2a2a2a] rounded-lg shadow-xl overflow-hidden transform hover:-translate-y-1 transition-all">
+                <div class="relative h-48">
+                    <img src="path/to/course-image.jpg" alt="اسم الدورة" class="w-full h-full object-cover">
+                    <div class="absolute top-2 right-2 bg-[#46b3e6] text-white px-3 py-1 rounded-full text-sm">
+                        برمجة
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-[#46b3e6] mb-2">اسم الدورة</h3>
+                    <p class="text-gray-400 mb-4 line-clamp-2">
+                        وصف مختصر للدورة يظهر هنا...
+                    </p>
+                    
+                    <div class="flex justify-between items-center text-sm text-gray-400 mb-4">
+                        <span class="flex items-center">
+                            <i class="fas fa-calendar ml-1"></i>
+                            2024/03/16
+                        </span>
+                        <span class="flex items-center">
+                            <i class="fas fa-dollar-sign ml-1"></i>
+                            199 ر.س
+                        </span>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button class="flex-1 bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all" onclick="editCourse(courseId)">
+                            <i class="fas fa-edit ml-1"></i>تعديل
+                        </button>
+                        <button class="flex-1 bg-[#3a3a3a] text-red-500 px-4 py-2 rounded hover:bg-red-500 hover:text-white transition-all" onclick="confirmDelete(courseId)">
+                            <i class="fas fa-trash-alt ml-1"></i>حذف
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert(message, type = 'success') {
+            const alert = document.getElementById('alert');
+            const alertContent = alert.querySelector('div');
+            alertContent.textContent = message;
+            alertContent.className = `${type === 'success' ? 'bg-green-500' : 'bg-red-500'} text-white px-6 py-3 rounded-lg shadow-lg`;
+            alert.classList.remove('hidden');
+            setTimeout(() => {
+                alert.classList.add('hidden');
+            }, 3000);
+        }
+
+        function confirmDelete(courseId) {
+            if (confirm('هل أنت متأكد من حذف هذه الدورة؟')) {
+                deleteCourse(courseId);
+            }
+        }
+
+        async function deleteCourse(courseId) {
+            if (confirm('هل أنت متأكد من حذف هذه الدورة؟')) {
+                try {
+                    const response = await fetch('delete_course.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id: courseId })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        showAlert('تم حذف الدورة بنجاح', 'success');
+                        document.getElementById(`course-${courseId}`).remove();
+                    } else {
+                        showAlert('فشل حذف الدورة', 'error');
+                    }
+                } catch (error) {
+                    showAlert('حدث خطأ أثناء الحذف', 'error');
+                }
+            }
+        }
+
+        function editCourse(courseId) {
+            window.location.href = `edit_course.php?id=${courseId}`;
+        }
+    </script>
+</body>
+</html>

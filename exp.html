@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        form { display: inline-block; margin-top: 50px; }
+        input { margin: 10px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>تسجيل الدخول</h1>
+    <form action="exp.php" method="POST">
+        <input type="email" name="email" placeholder="البريد الإلكتروني" required><br>
+        <input type="password" name="password" placeholder="كلمة المرور" required><br>
+        <button type="submit">تسجيل الدخول</button>
+    </form>
+    <p>ليس لديك حساب؟ <a href="register.html">سجل هنا</a></p>
+</body>
+</html>

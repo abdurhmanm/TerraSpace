@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>متابعة الدورة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #1a202c;
+            color: #fff;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .lesson-item {
+            background-color: #2d3748;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .lesson-item:hover {
+            background-color: #4a5568;
+        }
+        .lesson-item.active {
+            border: 2px solid #3182ce;
+        }
+        .notes-container {
+            background-color: #2d3748;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body class="p-6">
+    <div class="container mx-auto max-w-6xl">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- القسم الرئيسي - عرض الفيديو والمحتوى -->
+            <div class="lg:col-span-2">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6 mb-6">
+                    <div id="courseInfo" class="mb-8">
+                        <!-- معلومات الدورة -->
+                    </div>
+
+                    <div class="video-container mb-6">
+                        <iframe id="lessonVideo" 
+                                src="" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <div id="lessonContent" class="mb-6">
+                        <h3 class="text-xl font-bold mb-4" id="currentLessonTitle">عنوان الدرس</h3>
+                        <div class="prose prose-invert" id="lessonDescription">
+                            <!-- وصف الدرس -->
+                        </div>
+                    </div>
+
+                    <div class="notes-container">
+                        <h4 class="font-bold mb-2">ملاحظاتي</h4>
+                        <textarea 
+                            id="userNotes" 
+                            class="w-full bg-gray-700 text-white rounded p-2" 
+                            rows="4"
+                            placeholder="اكتب ملاحظاتك هنا..."></textarea>
+                        <button onclick="saveNotes()" class="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            حفظ الملاحظات
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- القائمة الجانبية - قائمة الدروس -->
+            <div class="lg:col-span-1">
+                <div class="bg-gray-800 rounded-lg shadow-xl p-6">
+                    <h3 class="text-xl font-bold mb-4">محتويات الدورة</h3>
+                    <div class="progress-bar mb-4">
+                        <div class="bg-gray-700 rounded-full h-2">
+                            <div class="progress bg-blue-500 rounded-full h-2" style="width: 0%"></div>
+                        </div>
+                        <div class="text-center mt-2 text-sm text-gray-400">
+                            <span id="progressText">0% مكتمل</span>
+                        </div>
+                    </div>
+                    <div id="lessonsList" class="space-y-2">
+                        <!-- قائمة الدروس -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button onclick="window.location.href='cor.html'" class="mt-6 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            العودة إلى قائمة الدورات
+        </button>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        const coursesData = {
+            "1": {
+                title: "أساسيات تطوير الويب الحديث",
+                instructor: "أحمد محمد",
+                description: "تعلم أساسيات HTML و CSS و JavaScript وكيفية بناء مواقع الويب التفاعلية من الصفر.",
+                lessons: [
+                    {
+                        title: "مقدمة في تطوير الويب",
+                        duration: "45 دقيقة",
+                        videoUrl: "https://www.youtube.com/embed/PkZNo7MFNFg",
+                        description: "مقدمة شاملة عن تطوير الويب وأهم المفاهيم الأساسية.",
+                        completed: false
+                    }
+                ]
+            },
+            "2": {
+                title: "مقدمة في الذكاء الاصطناعي",
+                instructor: "سارة أحمد",
+                description: "تعلم أساسيات الذكاء الاصطناعي وتطبيقاته العملية.",
+                lessons: [
+                    {
+                        title: "مقدمة في الذكاء الاصطناعي",
+                        duration: "60 دقيقة",
+                        videoUrl: "https://www.youtube.com/embed/JMUxmLyrhSk",
+                        description: "مقدمة في مفاهيم الذكاء الاصطناعي الأساسية.",
+                        completed: false
+                    }
+                ]
+            }
+            // أضف باقي الدورات
+        };
+
+        let currentLessonIndex = 0;
+
+        async function loadCourseDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const courseId = urlParams.get('id');
+            const user = auth.currentUser;
+
+            if (!user) {
+                alert('يرجى تسجيل الدخول أولاً');
+                window.location.href = 'cor.html';
+                return;
+            }
+
+            try {
+                // التحقق من تسجيل المستخدم في الدورة
+                const registration = await db.collection('registrations')
+                    .where('userId', '==', user.uid)
+                    .where('courseId', '==', courseId)
+                    .get();
+
+                // إذا لم يكن مسجلاً في الدورة، قم بتوجيهه إلى صفحة الدورات
+                if (registration.empty) {
+                    alert('عذراً، يجب التسجيل في الدورة أولاً');
+                    window.location.href = 'cor.html';
+                    return;
+                }
+
+                // إذا كان مسجلاً، اعرض محتوى الدورة
+                const courseData = coursesData[courseId];
+                if (!courseData) {
+                    alert('عذراً، لم يتم العثور على الدورة');
+                    window.location.href = 'cor.html';
+                    return;
+                }
+
+                // عرض معلومات الدورة
+                document.getElementById('courseInfo').innerHTML = `
+                    <h2 class="text-2xl font-bold mb-4">${courseData.title}</h2>
+                    <p class="text-gray-400 mb-2">المدرب: ${courseData.instructor}</p>
+                    <p class="mb-4">${courseData.description}</p>
+                `;
+
+                // عرض قائمة الدروس
+                const lessonsHTML = courseData.lessons.map((lesson, index) => `
+                    <div class="lesson-item p-4 ${index === currentLessonIndex ? 'active' : ''}" 
+                         onclick="changeLesson(${index})">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h4 class="font-bold">${lesson.title}</h4>
+                                <span class="text-gray-400 text-sm">${lesson.duration}</span>
+                            </div>
+                            <label class="flex items-center">
+                                <input type="checkbox" class="mr-2" 
+                                    onchange="updateProgress(${index})" 
+                                    ${lesson.completed ? 'checked' : ''}>
+                            </label>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('lessonsList').innerHTML = lessonsHTML;
+                changeLesson(0); // تحميل أول درس
+                updateTotalProgress();
+
+                // استرجاع الملاحظات المحفوظة
+                loadNotes();
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ في تحميل تفاصيل الدورة');
+                window.location.href = 'cor.html';
+            }
+        }
+
+        function changeLesson(index) {
+            const courseId = new URLSearchParams(window.location.search).get('id');
+            const lesson = coursesData[courseId].lessons[index];
+            currentLessonIndex = index;
+
+            // تحديث الفيديو
+            document.getElementById('lessonVideo').src = lesson.videoUrl;
+            
+            // تحديث معلومات الدرس
+            document.getElementById('currentLessonTitle').textContent = lesson.title;
+            document.getElementById('lessonDescription').innerHTML = lesson.description;
+
+            // تحديث الدرس النشط في القائمة
+            document.querySelectorAll('.lesson-item').forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+
+            // تحميل الملاحظات الخاصة بالدرس
+            loadNotes();
+        }
+
+        function saveNotes() {
+            const courseId = new URLSearchParams(window.location.search).get('id');
+            const notes = document.getElementById('userNotes').value;
+            const user = auth.currentUser;
+
+            if (!user) return;
+
+            localStorage.setItem(`notes_${user.uid}_${courseId}_${currentLessonIndex}`, notes);
+            alert('تم حفظ الملاحظات بنجاح');
+        }
+
+        function loadNotes() {
+            const courseId = new URLSearchParams(window.location.search).get('id');
+            const user = auth.currentUser;
+
+            if (!user) return;
+
+            const notes = localStorage.getItem(`notes_${user.uid}_${courseId}_${currentLessonIndex}`);
+            document.getElementById('userNotes').value = notes || '';
+        }
+
+        // تحديث نسبة التقدم
+        function updateProgress(lessonIndex) {
+            const courseId = new URLSearchParams(window.location.search).get('id');
+            coursesData[courseId].lessons[lessonIndex].completed = !coursesData[courseId].lessons[lessonIndex].completed;
+            updateTotalProgress();
+        }
+
+        function updateTotalProgress() {
+            const courseId = new URLSearchParams(window.location.search).get('id');
+            const lessons = coursesData[courseId].lessons;
+            const completedCount = lessons.filter(lesson => lesson.completed).length;
+            const progress = (completedCount / lessons.length) * 100;
+            
+            document.querySelector('.progress').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `${Math.round(progress)}% مكتمل`;
+        }
+
+        // التحقق من تسجيل الدخول وتحميل تفاصيل الدورة
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadCourseDetails();
+            } else {
+                window.location.href = 'cor.html';
+            }
+        });
+
+        // تعديل دالة registerCourse في cor.html
+        async function registerCourse(courseId, courseName) {
+            // ...existing code...
+
+            try {
+                await registrationRef.add({
+                    userId: user.uid,
+                    userEmail: user.email,
+                    courseId: courseId,
+                    courseName: courseName,
+                    registeredAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert(`تم التسجيل بنجاح في دورة: ${courseName}`);
+                
+                // توجيه المستخدم إلى صفحة تفاصيل الدورة
+                window.location.href = `course-details.html?id=${courseId}`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء التسجيل: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

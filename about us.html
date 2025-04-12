@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تيرا سبيس - الصفحة الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Tajawal', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* قسم المنصة */
+        .faq-section {
+            padding: 50px 20px;
+        }
+
+        .faq-section h1 {
+            color: #00d9ff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .faq-section h3 {
+            line-height: 1.6;
+            color: #cccccc;
+            margin-bottom: 40px;
+            font-weight: 400;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* قسم المميزات */
+        .features-section {
+            padding: 50px 20px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            margin-bottom: 50px;
+        }
+
+        .features-section h1 {
+            color: #00d9ff;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .features-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .feature-box {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            border-radius: 10px;
+            padding: 25px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-box i {
+            font-size: 2.5rem;
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .feature-box h3 {
+            margin-bottom: 15px;
+            color: #00d9ff;
+        }
+
+        .feature-box p {
+            font-size: 15px;
+            color: #cccccc;
+            line-height: 1.5;
+        }
+
+        /* قسم التذييل */
+        footer {
+            background-color: #161616;
+            padding: 40px 20px 20px;
+            margin-top: 50px;
+        }
+
+        .footer-top {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 30px;
+        }
+
+        .newsletter {
+            flex: 1;
+            min-width: 300px;
+            text-align: right;
+        }
+
+        .newsletter label {
+            display: block;
+            margin-bottom: 10px;
+            color: #00d9ff;
+            font-weight: 600;
+        }
+
+        .newsletter input {
+            padding: 12px;
+            width: 70%;
+            border-radius: 5px 0 0 5px;
+            border: none;
+            background-color: #2a2a2a;
+            color: white;
+        }
+
+        .newsletter button {
+            padding: 12px 20px;
+            background-color: #00d9ff;
+            color: #1e1e1e;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .newsletter button:hover {
+            background-color: #00b3d1;
+        }
+
+        .social-links {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .social-links h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .card {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .socialContainer {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #2a2a2a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .socialContainer:hover {
+            transform: scale(1.1);
+        }
+
+        .socialSvg {
+            width: 20px;
+            fill: #00d9ff;
+        }
+
+        .containerOne:hover {
+            background-color: #c13584;
+        }
+
+        .containerTwo:hover {
+            background-color: #1da1f2;
+        }
+
+        .containerThree:hover {
+            background-color: #0077b5;
+        }
+
+        .containerFour:hover {
+            background-color: #25d366;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #333;
+            padding-top: 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        /* التجاوبية */
+        @media (max-width: 768px) {
+            .footer-top {
+                flex-direction: column;
+            }
+            .newsletter, .social-links {
+                width: 100%;
+                text-align: center;
+            }
+            .newsletter input {
+                width: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- قسم المنصة -->
+        <div class="faq-section">
+            <h1>منصة تيرا سبيس</h1>
+            <h3>منصتنا التعليمية هي بيئة رقمية مبتكرة تهدف إلى تقديم محتوى تعليمي وتدريبي مميز عبر الإنترنت. نوفر أدوات متعددة مثل الفيديوهات التعليمية والتقييمات التي تسهم في تسهيل عملية التعلم وتعزيز تجربة المتعلم. تعتبر منصتنا وسيلة فعالة لتوفير التعلم لجميع الفئات، وذلك بفضل مرونتها في تقديم المحتوى التعليمي وإمكانية الوصول إليه بكل سهولة وفي أي وقت. تغطي المنصة مجالات تعليمية متنوعة تشمل التعليم الأكاديمي، البرمجة، ومجالات متعددة في تخصصات الحاسب، مما يجعلها وجهة شاملة للمهتمين بتطوير مهاراتهم ومعارفهم. كما تسهم بشكل كبير في تعزيز ثقافة التعلم المستمر والتطوير الذاتي لمواكبة احتياجات العصر الحديث.</h3>
+        </div>
+
+        <!-- قسم المميزات -->
+        <div class="features-section">
+            <h1>أهم المميزات</h1>
+            <div class="features-container">
+                <div class="feature-box">
+                    <i class="fas fa-code"></i>
+                    <h3>تعلّم أحدث التقنيات</h3>
+                    <p>تقدم محتوى متجدد وفقًا لأحدث التقنيات المطلوبة في سوق العمل.</p>
+                </div>
+
+                <div class="feature-box">
+                    <i class="fas fa-book-open"></i>
+                    <h3>محتوى تعليمي متنوع</h3>
+                    <p>تقدم محتوى متنوع ومتكامل يخدم مختلف الفئات والمجالات.</p>
+                </div>
+
+                <div class="feature-box">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>تعلّم سهل وممتع</h3>
+                    <p>تقدم محتوى تعليمي بشكل بسيط وممتع وبجودة عالية.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- قسم التذييل -->
+    <footer>
+        <div class="container">
+            <div class="footer-top">
+                <div class="newsletter">
+                    <label for="newsletter">لتقديم الاقتراحات عبر البريد الإلكتروني</label>
+                    <input type="email" id="newsletter" placeholder="أدخل بريدك الإلكتروني">
+                    <button>اشتراك</button>
+                </div>
+                <div class="social-links">
+                    <h3>الدعم الفني:</h3>
+                    <div class="card">
+                        <a href="#" class="socialContainer containerOne" aria-label="انستغرام">
+                            <svg class="socialSvg instagramSvg" viewBox="0 0 16 16">
+                                <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.917 3.917 0 0 0-1.417.923A3.927 3.927 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.916 3.916 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.926 3.926 0 0 0-.923-1.417A3.911 3.911 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0h.003zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599.28.28.453.546.598.92.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.47 2.47 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.478 2.478 0 0 1-.92-.598 2.48 2.48 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233 0-2.136.008-2.388.046-3.231.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92.28-.28.546-.453.92-.598.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045v.002zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92zm-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217zm0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334z"></path>
+                            </svg>
+                        </a>
+
+                        <a href="#" class="socialContainer containerTwo" aria-label="تويتر">
+                            <svg class="socialSvg twitterSvg" viewBox="0 0 16 16">
+                                <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3

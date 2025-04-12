@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الخبير | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <!-- القائمة العلوية -->
+        <nav class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <h1 class="text-xl font-bold text-gray-800">لوحة تحكم الخبير</h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-md">
+                            تسجيل الخروج
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- المحتوى الرئيسي -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- رسالة الترحيب -->
+            <div class="bg-white shadow rounded-lg p-6 mb-6">
+                <h2 class="text-lg font-medium text-gray-900 mb-2">مرحباً بك في لوحة تحكم الخبراء</h2>
+                <p class="text-gray-500">حسابك في انتظار موافقة الإدارة. سيتم إخطارك عبر البريد الإلكتروني عند الموافقة.</p>
+            </div>
+
+            <!-- معلومات الحساب -->
+            <div class="bg-white shadow rounded-lg p-6" id="expertInfo">
+                جاري تحميل معلومات الحساب...
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.firebasestorage.app",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // التحقق من تسجيل الدخول
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // جلب بيانات الخبير
+            try {
+                const expertDoc = await db.collection('experts').doc(user.uid).get();
+                if (expertDoc.exists) {
+                    const expertData = expertDoc.data();
+                    document.getElementById('expertInfo').innerHTML = `
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">معلومات الحساب</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-sm text-gray-500">الاسم</p>
+                                <p class="font-medium">${expertData.firstName} ${expertData.lastName}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">التخصص</p>
+                                <p class="font-medium">${expertData.specialty}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">البريد الإلكتروني</p>
+                                <p class="font-medium">${expertData.email}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500">حالة الحساب</p>
+                                <p class="font-medium ${expertData.status === 'pending' ? 'text-yellow-500' : 'text-green-500'}">
+                                    ${expertData.status === 'pending' ? 'في انتظار الموافقة' : 'مفعل'}
+                                </p>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // تسجيل الخروج
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                localStorage.removeItem('userRole');
+                localStorage.removeItem('expertId');
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('حدث خطأ أثناء تسجيل الخروج');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الدورات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+    <h1 class="text-2xl font-bold mb-4">المجالات الرئيسية</h1>
+
+    <!-- شريط البحث والتصفية -->
+    <div class="flex items-center gap-4 mb-4">
+        <input type="text" id="search" placeholder="بحث عن دورة" class="bg-gray-800 text-white px-4 py-2 rounded w-1/3 focus:outline-none focus:ring-2 focus:ring-purple-600">
+        <select id="course-type" class="bg-gray-800 text-white px-4 py-2 rounded">
+            <option value="all">الكل</option>
+            <option value="program">برنامج</option>
+            <option value="webinar">ويبنار</option>
+        </select>
+    </div>
+
+    <!-- قائمة الدورات -->
+    <div id="coursesContainer" class="grid md:grid-cols-3 gap-4 mt-6"></div>
+
+    <script>
+        async function fetchCourses() {
+    try {
+        const response = await fetch('get_courses.php');
+        if (!response.ok) throw new Error("❌ استجابة غير صحيحة من الخادم.");
+
+        const data = await response.json();
+        console.log("✅ البيانات المستلمة:", data);
+        displayCourses(data);
+    } catch (error) {
+        console.error("❌ خطأ في جلب البيانات:", error);
+    }
+}
+
+       
+    
+function displayCourses(courses) {
+    const coursesContainer = document.querySelector("#coursesContainer");
+    coursesContainer.innerHTML = "";
+
+    if (courses.length === 0) {
+        coursesContainer.innerHTML = "<p class='text-red-500'>❌ لا توجد دورات متاحة.</p>";
+        return;
+    }
+
+    courses.forEach(course => {
+        const courseElement = document.createElement("div");
+        courseElement.classList.add("bg-gray-800", "p-4", "rounded", "shadow", "text-white");
+
+        courseElement.innerHTML = `
+            <h3 class="text-lg font-bold mb-2">${course.title}</h3>
+            <p><strong>المدرب:</strong> ${course.instructor}</p>
+            <p><strong>التقييم:</strong> ⭐${course.rating}</p>
+            <p><strong>تاريخ البدء:</strong> ${course.start_date}</p>
+            <button onclick="registerCourse('${course.id}')" class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all">
+                📌 سجل الآن
+            </button>
+        `;
+
+        coursesContainer.appendChild(courseElement);
+    });
+
+    console.log("✅ الدورات معروضة في الصفحة بنجاح!");
+}
+
+
+        function registerCourse(courseId) {
+            alert(`تم تسجيلك في الدورة رقم: ${courseId}`);
+            // يمكن لاحقًا إرسال البيانات إلى قاعدة البيانات
+        }
+        
+        document.addEventListener("DOMContentLoaded", fetchCourses); 
+    </script>
+</body>
+</html>

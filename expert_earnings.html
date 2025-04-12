@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الأرباح | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">الأرباح والمبيعات</h1>
+            <p class="text-gray-400">تتبع أرباحك ومبيعات دوراتك</p>
+        </div>
+
+        <!-- البطاقات الإحصائية -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- إجمالي الأرباح -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">إجمالي الأرباح</h3>
+                    <i class="fas fa-dollar-sign text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">15,750 ر.س</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +12% من الشهر الماضي
+                </div>
+            </div>
+
+            <!-- المبيعات -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">عدد المبيعات</h3>
+                    <i class="fas fa-shopping-cart text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">245</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +8% من الشهر الماضي
+                </div>
+            </div>
+
+            <!-- الطلاب الجدد -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">طلاب جدد</h3>
+                    <i class="fas fa-users text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">89</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +15% من الشهر الماضي
+                </div>
+            </div>
+
+            <!-- متوسط التقييم -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">متوسط التقييم</h3>
+                    <i class="fas fa-star text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">4.8</div>
+                <div class="text-gray-400 text-sm mt-2">
+                    من 5.0 نجوم
+                </div>
+            </div>
+        </div>
+
+        <!-- الرسم البياني والمعاملات -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- الرسم البياني -->
+            <div class="lg:col-span-2 bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <h3 class="text-xl font-bold text-[#46b3e6] mb-4">تحليل المبيعات</h3>
+                <canvas id="earningsChart" class="w-full"></canvas>
+            </div>
+
+            <!-- قائمة المعاملات -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <h3 class="text-xl font-bold text-[#46b3e6] mb-4">آخر المعاملات</h3>
+                <div class="space-y-4">
+                    <!-- معاملة -->
+                    <div class="flex items-center justify-between p-3 bg-[#3a3a3a] rounded-lg">
+                        <div>
+                            <div class="font-medium">تطوير تطبيقات الويب</div>
+                            <div class="text-sm text-gray-400">أحمد محمد</div>
+                        </div>
+                        <div class="text-green-500">+500 ر.س</div>
+                    </div>
+                    <!-- معاملة -->
+                    <div class="flex items-center justify-between p-3 bg-[#3a3a3a] rounded-lg">
+                        <div>
+                            <div class="font-medium">الذكاء الاصطناعي</div>
+                            <div class="text-sm text-gray-400">سارة أحمد</div>
+                        </div>
+                        <div class="text-green-500">+750 ر.س</div>
+                    </div>
+                    <!-- معاملة -->
+                    <div class="flex items-center justify-between p-3 bg-[#3a3a3a] rounded-lg">
+                        <div>
+                            <div class="font-medium">أمن المعلومات</div>
+                            <div class="text-sm text-gray-400">محمد علي</div>
+                        </div>
+                        <div class="text-green-500">+600 ر.س</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // إعداد الرسم البياني
+        const ctx = document.getElementById('earningsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                datasets: [{
+                    label: 'الأرباح الشهرية',
+                    data: [2500, 3200, 2800, 4200, 3800, 5000],
+                    borderColor: '#46b3e6',
+                    backgroundColor: 'rgba(70, 179, 230, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            color: '#fff'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

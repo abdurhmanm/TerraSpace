@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الطلاب | تيـرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-['Tajawal']">
+    <nav class="bg-white shadow-lg mb-6">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="homeexpert.html" class="text-xl font-bold text-gray-800">
+                    <i class="fas fa-arrow-right ml-2"></i>
+                    العودة للوحة التحكم
+                </a>
+                <!-- إضافة قائمة اختيار الدورة -->
+                <div class="flex items-center gap-4">
+                    <select id="courseSelect" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                        <option value="">اختر الدورة</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4">
+        <!-- معلومات الدورة -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 id="courseTitle" class="text-2xl font-bold text-gray-800 mb-2">عنوان الدورة</h2>
+                    <p id="courseDescription" class="text-gray-600">وصف الدورة</p>
+                </div>
+                <div class="text-left">
+                    <p class="text-gray-600">
+                        <span>عدد الطلاب المسجلين: </span>
+                        <span id="studentsCount" class="font-bold">0</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- قائمة الطلاب -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">قائمة الطلاب المسجلين</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    اسم الطالب
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    البريد الإلكتروني
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    تاريخ التسجيل
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    التقدم
+                                </th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    الإجراءات
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsList" class="bg-white divide-y divide-gray-200">
+                            <!-- سيتم إضافة الطلاب هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.firebasestorage.app",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // الحصول على معرف الدورة من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        let courseId = urlParams.get('courseId');
+
+        // أضف هذه الدالة بعد تهيئة Firebase
+        async function loadCoursesList() {
+            try {
+                const user = auth.currentUser;
+                if (!user) return;
+
+                const coursesSnapshot = await db.collection('courses')
+                    .where('expertId', '==', user.uid)
+                    .get();
+
+                const courseSelect = document.getElementById('courseSelect');
+                courseSelect.innerHTML = '<option value="">اختر الدورة</option>';
+
+                coursesSnapshot.forEach(doc => {
+                    const course = doc.data();
+                    courseSelect.innerHTML += `
+                        <option value="${doc.id}">${course.title}</option>
+                    `;
+                });
+
+                // إذا تم تمرير معرف الدورة في URL
+                if (courseId) {
+                    courseSelect.value = courseId;
+                }
+            } catch (error) {
+                console.error('Error loading courses:', error);
+            }
+        }
+
+        // تعديل دالة loadCourseDetails
+        async function loadCourseDetails() {
+            try {
+                const courseDoc = await db.collection('courses').doc(courseId).get();
+                if (courseDoc.exists) {
+                    const courseData = courseDoc.data();
+                    document.getElementById('courseTitle').textContent = courseData.title;
+                    document.getElementById('courseDescription').textContent = courseData.description;
+                    
+                    // جلب عدد الطلاب المسجلين
+                    const enrollmentsSnapshot = await db.collection('enrollments')
+                        .where('courseId', '==', courseId)
+                        .get();
+                    document.getElementById('studentsCount').textContent = enrollmentsSnapshot.size;
+                }
+            } catch (error) {
+                console.error('Error loading course details:', error);
+                alert('حدث خطأ في تحميل بيانات الدورة');
+            }
+        }
+
+        // تعديل دالة loadStudents
+        async function loadStudents() {
+            const studentsList = document.getElementById('studentsList');
+            try {
+                // جلب جميع التسجيلات للدورة الحالية
+                const enrollmentsSnapshot = await db.collection('enrollments')
+                    .where('courseId', '==', courseId)
+                    .get();
+
+                if (enrollmentsSnapshot.empty) {
+                    studentsList.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                لا يوجد طلاب مسجلين في هذه الدورة حتى الآن
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                let studentsHTML = '';
+                for (const enrollmentDoc of enrollmentsSnapshot.docs) {
+                    const enrollment = enrollmentDoc.data();
+                    
+                    // جلب بيانات الطالب
+                    const studentDoc = await db.collection('users')
+                        .doc(enrollment.userId)
+                        .get();
+                    
+                    if (studentDoc.exists) {
+                        const studentData = studentDoc.data();
+                        
+                        // جلب تقدم الطالب في الدورة
+                        const progressDoc = await db.collection('progress')
+                            .where('userId', '==', enrollment.userId)
+                            .where('courseId', '==', courseId)
+                            .get();
+
+                        const progress = progressDoc.empty ? 0 : progressDoc.docs[0].data().progressPercentage;
+
+                        studentsHTML += `
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            ${studentData.firstName || 'غير متوفر'} ${studentData.lastName || ''}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">${studentData.email || 'غير متوفر'}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        ${enrollment.enrollmentDate ? new Date(enrollment.enrollmentDate.toDate()).toLocaleDateString() : 'غير متوفر'}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: ${progress}%"></div>
+                                    </div>
+                                    <span class="text-sm text-gray-600">${progress}%</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-left">
+                                    <button onclick="viewStudentDetails('${enrollment.userId}')" 
+                                            class="text-blue-600 hover:text-blue-900 ml-3">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <button onclick="removeStudent('${enrollmentDoc.id}')" 
+                                            class="text-red-600 hover:text-red-900">
+                                        <i class="fas fa-user-minus"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                }
+                studentsList.innerHTML = studentsHTML;
+
+            } catch (error) {
+                console.error('Error loading students:', error);
+                studentsList.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-red-500">
+                            حدث خطأ أثناء تحميل بيانات الطلاب
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        // دالة جديدة لعرض تفاصيل الطالب
+        async function viewStudentDetails(userId) {
+            try {
+                const studentDoc = await db.collection('users').doc(userId).get();
+                const studentData = studentDoc.data();
+                
+                alert(`
+                    معلومات الطالب:
+                    الاسم: ${studentData.firstName} ${studentData.lastName}
+                    البريد: ${studentData.email}
+                    الهاتف: ${studentData.phone}
+                `);
+            } catch (error) {
+                console.error('Error fetching student details:', error);
+                alert('حدث خطأ أثناء جلب بيانات الطالب');
+            }
+        }
+
+        async function removeStudent(enrollmentId) {
+            if (confirm('هل أنت متأكد من إلغاء تسجيل هذا الطالب من الدورة؟')) {
+                try {
+                    await db.collection('enrollments').doc(enrollmentId).delete();
+                    loadStudents(); // إعادة تحميل قائمة الطلاب
+                } catch (error) {
+                    console.error('Error removing student:', error);
+                    alert('حدث خطأ أثناء إلغاء تسجيل الطالب');
+                }
+            }
+        }
+
+        function viewProgress(enrollmentId) {
+            // يمكن إضافة صفحة تفاصيل تقدم الطالب هنا
+            alert('قريباً - عرض تفاصيل تقدم الطالب');
+        }
+
+        // تعديل event listener للصفحة
+        window.addEventListener('load', () => {
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    await loadCoursesList();
+                    if (courseId) {
+                        loadCourseDetails();
+                        loadStudents();
+                    }
+                } else {
+                    window.location.href = 'login.html';
+                }
+            });
+        });
+
+        // إضافة مستمع حدث لتغيير الدورة المختارة
+        document.getElementById('courseSelect').addEventListener('change', function() {
+            const selectedCourseId = this.value;
+            if (selectedCourseId) {
+                // تحديث URL مع معرف الدورة الجديد
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('courseId', selectedCourseId);
+                window.history.pushState({}, '', newUrl);
+                
+                // تحميل بيانات الدورة والطلاب
+                courseId = selectedCourseId;
+                loadCourseDetails();
+                loadStudents();
+            } else {
+                // إعادة تعيين المحتوى إذا لم يتم اختيار دورة
+                document.getElementById('courseTitle').textContent = 'اختر دورة';
+                document.getElementById('courseDescription').textContent = '';
+                document.getElementById('studentsCount').textContent = '0';
+                document.getElementById('studentsList').innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                            الرجاء اختيار دورة لعرض الطلاب المسجلين
+                        </td>
+                    </tr>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

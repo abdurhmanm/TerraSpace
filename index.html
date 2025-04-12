@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تيـرا سبيس | الرئيسية</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* متغيرات الألوان والخصائص العامة */
+        :root {
+            --primary-color: #2c6eaf;
+            --secondary-color: #1d4e80;
+            --accent-color: #46b3e6;
+            --dark-color: #1a2c42;
+            --light-color: #f0f5fc;
+            --success-color: #2ecc71;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        /* إعدادات أساسية */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8faff;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            direction: rtl;
+        }
+
+        /* شريط التنقل */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .navbar button {
+            background-color: transparent;
+            border: none;
+            color: var(--dark-color);
+            font-size: 16px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .navbar button::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 3px;
+            background-color: var(--primary-color);
+            bottom: 0;
+            right: 50%;
+            transform: translateX(50%);
+            transition: var(--transition);
+        }
+
+        .navbar button:hover {
+            color: var(--primary-color);
+        }
+
+        .navbar button:hover::after {
+            width: 70%;
+        }
+
+        .navbar .btn {
+            color: var(--primary-color);
+        }
+
+        .navbar .btn::after {
+            width: 70%;
+        }
+
+        /* ملف المستخدم في التنقل */
+        .user-profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .user-profile-btn {
+            display: flex;
+            align-items: center;
+            background-color: var(--light-color);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-profile-btn:hover {
+            background-color: #e4eeff;
+        }
+
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .dropdown-icon {
+            margin-right: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 55px;
+            left: 0;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 220px;
+            padding: 15px 0;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover .user-dropdown,
+        .user-dropdown:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-dropdown-header {
+            padding: 0 20px 15px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 10px;
+        }
+
+        .user-fullname {
+            font-weight: bold;
+            font-size: 16px;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--dark-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--light-color);
+        }
+
+        .dropdown-item i {
+            margin-left: 10px;
+            font-size: 16px;
+            color: var(--primary-color);
+            width: 20px;
+            text-align: center;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background-color: #eee;
+            margin: 10px 0;
+        }
+
+        .logout-item {
+            color: #e74c3c;
+        }
+
+        .logout-item i {
+            color: #e74c3c;
+        }
+
+        /* قسم العنوان الرئيسي */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--light-color) 0%, #e6f0ff 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150px;
+            background-color: white;
+            bottom: -80px;
+            left: -25%;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero p {
+            max-width: 800px;
+            margin-bottom: 30px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            color: #555;
+            position: relative;
+            z-index: 2;
+        }
+
+        .button-start {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(44, 110, 175, 0.3);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .button-start:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(44, 110, 175, 0.4);
+        }
+
+        .button-start::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: 0.5s;
+            transform: skewX(-15deg);
+        }
+
+        .button-start:hover::before {
+            right: 100%;
+        }
+
+        /* قسم معرض الصور */
+        .carousel {
+            padding: 60px 0;
+            background-color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .carousel-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .images {
+            display: flex;
+            overflow: hidden;
+            width: 80%;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            position: relative;
+            height: 400px;
+        }
+
+        .images img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .images img.active {
+            opacity: 1;
+        }
+
+        .prev-btn, .next-btn {
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            z-index: 10;
+        }
+
+        .prev-btn {
+            left: 5%;
+        }
+
+        .next-btn {
+            right: 5%;
+        }
+
+        .prev-btn:hover, .next-btn:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
+
+        /* قسم الميزات */
+        .features {
+            padding: 80px 20px;
+            background-color: var(--light-color);
+        }
+
+        .features-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--dark-color);
+            font-size: 2.2rem;
+            position: relative;
+        }
+
+        .features-title::after {
+            content: '';
+            position: absolute;
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-color);
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 5px;
+            background-color: var(--primary-color);
+            top: 0;
+            left: 0;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .feature-title {
+            margin-bottom: 15px;
+            color: var(--dark-color);
+            font-size: 1.5rem;
+        }
+
+        .feature-desc {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* تذييل الصفحة */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 50px 20px 20px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 1.1rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .social-icons {
+            margin-bottom: 30px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: var(--transition);
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+
+        /* زر ظهور/إخفاء القائمة في الشاشات الصغيرة */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark-color);
+            cursor: pointer;
+        }
+
+        /* أنماط أزرار تسجيل الدخول وإنشاء حساب */
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .login-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .register-btn {
+            background-color: var(--primary-color);
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .register-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .expert-btn {
+            background-color: var(--secondary-color);
+            border: none;
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .expert-btn:hover {
+            background-color: var(--dark-color);
+            transform: translateY(-2px);
+        }
+
+        /* تعديلات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .auth-buttons {
+                gap: 5px;
+            }
+
+            .login-btn, .register-btn, .expert-btn {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .auth-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .login-btn, .register-btn, .expert-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 992px) {
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 80%;
+                height: 100vh;
+                background-color: white;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                transition: var(--transition);
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .navbar a {
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .navbar button {
+                width: 100%;
+                text-align: right;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .button-start {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+
+            .images {
+                width: 90%;
+                height: 300px;
+            }
+
+            .prev-btn, .next-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .user-dropdown {
+                left: auto;
+                right: 0;
+                width: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .feature-card {
+                padding: 20px;
+            }
+
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .user-name {
+                display: none;
+            }
+
+            .user-profile-btn {
+                padding: 5px;
+            }
+        }
+    </style>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+    
+    <!-- تهيئة Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.appspot.com",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        
+        // الحصول على مراجع الخدمات
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const analytics = firebase.analytics();
+    </script>
+</head>
+<body>
+    <!-- شريط التنقل -->
+    <header class="navbar">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="nav-links" id="navLinks">
+            <a href="index.html">
+                <button class="btn">الرئيسية</button>
+            </a>
+            <a href="cor.html">
+                <button class="btn">الدورات</button>
+            </a>
+            <a href="about us.html">
+                <button class="btn">من نحن</button>
+            </a>
+        </div>
+        
+        <!-- أزرار تسجيل الدخول وإنشاء حساب -->
+        <div class="auth-buttons">
+            <a href="login.html">
+                <button class="login-btn">تسجيل دخول</button>
+            </a>
+            <a href="register.html">
+                <button class="register-btn">إنشاء حساب</button>
+            </a>
+            <a href="loginexpert.html">
+                <button class="expert-btn">دخول الخبراء</button>
+            </a>
+        </div>
+    </header>
+
+    <!-- محتوى الصفحة -->
+    <main>
+        <!-- العنوان الرئيسي -->
+        <section class="hero">
+            <h1>منصة تيـرا سبيس</h1>
+            <p>منصة تيرا سبيس هي بوابة تعليمية إلكترونية تتيح للمتعلمين الوصول إلى المحتوى الدراسي بسهولة ومرونة، دون التقيد بمكان أو زمان محدد. توفر المنصة مجموعة متنوعة من الدروس التفاعلية، المحاضرات المسجلة، التي تعزز الفهم والاستيعاب. كما تتيح التواصل بين الطلاب والمعلمين مما يخلق بيئة تعليمية متكاملة تلبي احتياجات جميع المتعلمين، سواء كانوا طلابًا أو محترفين يسعون لتطوير مهاراتهم.</p>
+            <a href="login.html">
+                <button class="button-start">سجل الآن</button>
+            </a>
+        </section>
+
+        <!-- معرض الصور -->
+        <section class="carousel">
+            <div class="carousel-container">
+                <button class="prev-btn"><i class="fas fa-chevron-right"></i></button>
+                <div class="images">
+                    <img src="/images/eee.jpeg" alt="أمن المعلومات" class="active">
+                    <img src="/images/qqqq.jpeg" alt="الشبكات">
+                    <img src="/images/wwwwwww.jpeg" alt="الذكاء الاصطناعي">
+                    <img src="/images/back.jpeg" alt="تطوير الويب">
+                </div>
+                <button class="next-btn"><i class="fas fa-chevron-left"></i></button>
+            </div>
+        </section>
+
+        <!-- قسم الميزات -->
+        <section class="features">
+            <h2 class="features-title">مميزات منصتنا</h2>
+            <div class="features-container">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="feature-title">دورات تفاعلية</h3>
+                    <p class="feature-desc">محتوى تعليمي تفاعلي يجمع بين النظرية والتطبيق العملي لتعزيز التعلم بشكل فعال.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="feature-title">تعلم في أي وقت</h3>
+                    <p class="feature-desc">وصول مرن للمحتوى التعليمي على مدار الساعة، دون التقيد بجداول زمنية محددة.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <h3 class="feature-title">شهادات معتمدة</h3>
+                    <p class="feature-desc">احصل على شهادات معتمدة بعد إكمال الدورات، تعزز فرصك في سوق العمل.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">مجتمع تعليمي</h3>
+                    <p class="feature-desc">تواصل مع المدربين والطلاب الآخرين من خلال منتديات النقاش ومجموعات الدراسة.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- تذييل الصفحة -->
+    <footer>
+        <div class="footer-logo">منصة تيرا سبيس</div>
+        <div class="footer-links">
+           
+           
+            <a href="about-us.html">من نحن</a>
+        </div>
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+        <div class="copyright">
+            &copy; 2025 منصة تيرا سبيس - جميع الحقوق محفوظة
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // التحقق من حالة المصادقة
+            checkAuthState();
+
+            // كود معرض الصور المتحرك
+            const images = document.querySelectorAll('.images img');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            let currentIndex = 0;
+
+            // عرض الصورة الحالية وإخفاء البقية
+            function showImage(index) {
+                images.forEach(img => img.classList.remove('active'));
+                images[index].classList.add('active');
+            }
+
+            // الانتقال إلى الصورة التالية
+            function nextImage() {
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
+            }
+
+            // الانتقال إلى الصورة السابقة
+            function prevImage() {
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            }
+
+            // أحداث النقر على الأزرار
+            nextBtn.addEventListener('click', nextImage);
+            prevBtn.addEventListener('click', prevImage);
+
+            // تنفيذ التنقل التلقائي كل 5 ثوان
+            setInterval(nextImage, 5000);
+            
+            // التبديل بين ظهور وإخفاء قائمة التنقل في الشاشات الصغيرة
+            const menuToggle = document.getElementById('menuToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+            });
+
+            // تحديث روابط تسجيل الدخول وإنشاء الحساب
+            document.querySelector('.login-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'login.html';
+            });
+
+            document.querySelector('.register-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'register.html';
+            });
+
+            document.querySelector('.button-start').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'register.html';
+            });
+
+            // التحقق من حالة تسجيل الدخول ونوع المستخدم
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            
+                            // توجيه المستخدم بناءً على نوع الحساب
+                            if (userData.role === 'expert') {
+                                window.location.href = 'homeexpert.html';
+                            } else {
+                                window.location.href = 'home.html';
+                            }
+                        }
+                    } catch (error) {
+                        console.error('Error checking user role:', error);
+                    }
+                }
+            });
+
+            // تحديث الروابط لتشمل زر الخبراء
+            document.querySelector('.expert-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'loginexpert.html';
+            });
+
+            // التحقق من حالة تسجيل الدخول وعرض بيانات المستخدم
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        if (userDoc.exists) {
+                            const userData = userDoc.data();
+                            console.log('User data:', userData);
+                        } else {
+                            console.error('User document does not exist.');
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
+                    }
+                } else {
+                    console.log('No user is signed in.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

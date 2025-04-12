@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلابي | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">طلابي</h1>
+            <p class="text-gray-400">قائمة الطلاب المسجلين في دوراتك</p>
+        </div>
+
+        <!-- شريط البحث والفلترة -->
+        <div class="bg-[#2a2a2a] p-4 rounded-lg shadow-xl mb-6">
+            <div class="flex flex-wrap gap-4">
+                <input type="text" 
+                       placeholder="ابحث عن طالب..." 
+                       class="flex-1 bg-[#3a3a3a] text-white px-4 py-2 rounded-lg border border-[#46b3e6] focus:outline-none focus:ring-2 focus:ring-[#2c6eaf]">
+                
+                <select class="bg-[#3a3a3a] text-white px-4 py-2 rounded-lg border border-[#46b3e6] focus:outline-none focus:ring-2 focus:ring-[#2c6eaf]">
+                    <option value="">كل الدورات</option>
+                    <option value="web">تطوير الويب</option>
+                    <option value="ai">الذكاء الاصطناعي</option>
+                    <option value="security">أمن المعلومات</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- جدول الطلاب -->
+        <div class="bg-[#2a2a2a] rounded-lg shadow-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full">
+                    <thead class="bg-[#1a1a1a]">
+                        <tr>
+                            <th class="py-4 px-6 text-right text-[#46b3e6]">اسم الطالب</th>
+                            <th class="py-4 px-6 text-right text-[#46b3e6]">الدورة</th>
+                            <th class="py-4 px-6 text-right text-[#46b3e6]">تاريخ التسجيل</th>
+                            <th class="py-4 px-6 text-right text-[#46b3e6]">التقدم</th>
+                            <th class="py-4 px-6 text-right text-[#46b3e6]">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#3a3a3a]">
+                        <!-- صف نموذجي -->
+                        <tr class="hover:bg-[#3a3a3a] transition-colors">
+                            <td class="py-4 px-6">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-[#46b3e6] rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                        أ
+                                    </div>
+                                    <div>
+                                        <div class="font-medium">أحمد محمد</div>
+                                        <div class="text-sm text-gray-400">ahmed@example.com</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="py-4 px-6">تطوير تطبيقات الويب</td>
+                            <td class="py-4 px-6">2024/03/16</td>
+                            <td class="py-4 px-6">
+                                <div class="w-full bg-[#1a1a1a] rounded-full h-2.5">
+                                    <div class="bg-[#46b3e6] h-2.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                                <span class="text-sm text-gray-400">75%</span>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="flex gap-2">
+                                    <button class="bg-[#3a3a3a] text-[#46b3e6] p-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">
+                                        <i class="fas fa-envelope"></i>
+                                    </button>
+                                    <button class="bg-[#3a3a3a] text-[#46b3e6] p-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">
+                                        <i class="fas fa-chart-line"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- يمكن تكرار الصفوف حسب الحاجة -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ترقيم الصفحات -->
+            <div class="bg-[#1a1a1a] p-4 flex justify-between items-center">
+                <div class="text-gray-400">عرض 1-10 من 50 طالب</div>
+                <div class="flex gap-2">
+                    <button class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">
+                        السابق
+                    </button>
+                    <button class="bg-[#46b3e6] text-white px-4 py-2 rounded">1</button>
+                    <button class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">2</button>
+                    <button class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">3</button>
+                    <button class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all">
+                        التالي
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // يمكن إضافة وظائف البحث والفلترة هنا
+        document.querySelector('input[type="text"]').addEventListener('input', function(e) {
+            // تنفيذ البحث
+            console.log('Searching for:', e.target.value);
+        });
+
+        document.querySelector('select').addEventListener('change', function(e) {
+            // تنفيذ الفلترة
+            console.log('Filtering by course:', e.target.value);
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // البحث والفلترة
+            const searchInput = document.querySelector('input[type="text"]');
+            const courseFilter = document.querySelector('select');
+            const rows = document.querySelectorAll('tbody tr');
+
+            // وظيفة البحث
+            searchInput.addEventListener('input', filterStudents);
+            courseFilter.addEventListener('change', filterStudents);
+
+            function filterStudents() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const selectedCourse = courseFilter.value;
+
+                rows.forEach(row => {
+                    const studentName = row.querySelector('.font-medium').textContent.toLowerCase();
+                    const studentEmail = row.querySelector('.text-sm').textContent.toLowerCase();
+                    const courseName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+
+                    const matchesSearch = studentName.includes(searchTerm) || 
+                                        studentEmail.includes(searchTerm);
+                    const matchesCourse = !selectedCourse || courseName.includes(selectedCourse);
+
+                    row.style.display = matchesSearch && matchesCourse ? '' : 'none';
+                });
+            }
+
+            // أزرار الإجراءات
+            document.querySelectorAll('.fa-envelope').forEach(btn => {
+                btn.parentElement.addEventListener('click', function(e) {
+                    const studentName = this.closest('tr').querySelector('.font-medium').textContent;
+                    const studentEmail = this.closest('tr').querySelector('.text-sm').textContent;
+                    showMessageModal(studentName, studentEmail);
+                });
+            });
+
+            document.querySelectorAll('.fa-chart-line').forEach(btn => {
+                btn.parentElement.addEventListener('click', function(e) {
+                    const studentName = this.closest('tr').querySelector('.font-medium').textContent;
+                    showProgressDetails(studentName);
+                });
+            });
+
+            // الترقيم
+            const itemsPerPage = 10;
+            let currentPage = 1;
+            const totalPages = Math.ceil(rows.length / itemsPerPage);
+
+            function updatePagination() {
+                const start = (currentPage - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+
+                rows.forEach((row, index) => {
+                    row.style.display = (index >= start && index < end) ? '' : 'none';
+                });
+
+                document.querySelector('.text-gray-400').textContent = 
+                    `عرض ${start + 1}-${Math.min(end, rows.length)} من ${rows.length} طالب`;
+            }
+
+            document.querySelectorAll('.flex.gap-2 button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (this.textContent === 'السابق' && currentPage > 1) {
+                        currentPage--;
+                    } else if (this.textContent === 'التالي' && currentPage < totalPages) {
+                        currentPage++;
+                    } else if (!isNaN(this.textContent)) {
+                        currentPage = parseInt(this.textContent);
+                    }
+                    updatePagination();
+                    updatePaginationButtons();
+                });
+            });
+
+            function updatePaginationButtons() {
+                document.querySelectorAll('.flex.gap-2 button').forEach(btn => {
+                    if (!isNaN(btn.textContent)) {
+                        btn.className = parseInt(btn.textContent) === currentPage
+                            ? 'bg-[#46b3e6] text-white px-4 py-2 rounded'
+                            : 'bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded hover:bg-[#2c6eaf] hover:text-white transition-all';
+                    }
+                });
+            }
+
+            // النوافذ المنبثقة
+            function showMessageModal(studentName, studentEmail) {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                modal.innerHTML = `
+                    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+                        <h3 class="text-xl font-bold text-[#46b3e6] mb-4">رسالة إلى ${studentName}</h3>
+                        <textarea class="w-full bg-[#3a3a3a] text-white p-3 rounded mb-4 min-h-[150px]" 
+                                  placeholder="اكتب رسالتك هنا..."></textarea>
+                        <div class="flex justify-end gap-2">
+                            <button class="bg-[#46b3e6] text-white px-4 py-2 rounded hover:bg-[#2c6eaf] transition-all">
+                                إرسال
+                            </button>
+                            <button class="bg-[#3a3a3a] text-white px-4 py-2 rounded hover:bg-[#2c6eaf] transition-all">
+                                إلغاء
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                modal.querySelector('button:last-child').onclick = () => modal.remove();
+                modal.querySelector('button:first-of-type').onclick = () => {
+                    const message = modal.querySelector('textarea').value;
+                    if (message.trim()) {
+                        alert(`تم إرسال الرسالة إلى ${studentEmail}`);
+                        modal.remove();
+                    }
+                };
+            }
+
+            function showProgressDetails(studentName) {
+                const modal = document.createElement('div');
+                modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50';
+                modal.innerHTML = `
+                    <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl max-w-md w-full mx-4">
+                        <h3 class="text-xl font-bold text-[#46b3e6] mb-4">تقدم ${studentName}</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span>المحتوى النظري</span>
+                                    <span>80%</span>
+                                </div>
+                                <div class="w-full bg-[#1a1a1a] rounded-full h-2.5">
+                                    <div class="bg-[#46b3e6] h-2.5 rounded-full" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span>التطبيقات العملية</span>
+                                    <span>65%</span>
+                                </div>
+                                <div class="w-full bg-[#1a1a1a] rounded-full h-2.5">
+                                    <div class="bg-[#46b3e6] h-2.5 rounded-full" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span>الاختبارات</span>
+                                    <span>90%</span>
+                                </div>
+                                <div class="w-full bg-[#1a1a1a] rounded-full h-2.5">
+                                    <div class="bg-[#46b3e6] h-2.5 rounded-full" style="width: 90%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-6 text-center">
+                            <button class="bg-[#3a3a3a] text-white px-4 py-2 rounded hover:bg-[#2c6eaf] transition-all">
+                                إغلاق
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+
+                modal.querySelector('button').onclick = () => modal.remove();
+            }
+
+            // تحديث الصفحة الأولية
+            updatePagination();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Screen Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="register as expert.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    /* إضافة CSS هنا */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+        <form class="form">
+            <p class="title">تسجيل كخبير </p>
+            <p class="message">سجل الان واحصل على امكانية الوصول الكامل الي تطبيقنا  </p>
+            <div class="flex">
+                <label>
+                    <input required name="first_name" type="text" class="input">
+                    <span>الاسم الاول</span>
+                </label>
+                <label>
+                    <input required name="last_name" type="text" class="input">
+                    <span>الاسم الاخير</span>
+                </label>
+            </div>  
+            <label>
+                <input required name="specialty" type="text" class="input">
+                <span>التخصص</span>
+            </label>
+            <label>
+                <input required name="email" type="email" class="input">
+                <span>البريد الاكتروني</span>
+            </label>
+            <label>
+                <input required name="password" type="password" class="input">
+                <span>كلمة المرور</span>
+            </label>
+            <label>
+                <input required name="confirm_password" type="password" class="input">
+                <span>تأكيد كلمة المرور </span>
+            </label>
+            <label>
+                <input required name="phone" type="text" class="input">
+                <span>الهاتف</span>
+            </label>
+            <button type="submit" class="submit">تسجيل</button>
+            <p class="signin">هل لديك حساب؟ <a href="loginexpert.html">تسجيل الدخول</a> </p>
+        </form>
+    </div>
+    <div class="right"></div>
+  </div>
+  <script>
+   const firebaseConfig = {
+  apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+  authDomain: "teerra-space.firebaseapp.com",
+  projectId: "teerra-space",
+  storageBucket: "teerra-space.firebasestorage.app",
+  messagingSenderId: "416330751201",
+  appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+};
+
+    
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    document.querySelector('.form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const submitButton = document.querySelector('.submit');
+        
+        try {
+            // تعطيل الزر وإظهار حالة التحميل
+            submitButton.disabled = true;
+            submitButton.innerHTML = 'جاري التسجيل... <i class="fas fa-spinner fa-spin"></i>';
+
+            // جمع البيانات
+            const firstName = document.querySelector('[name="first_name"]').value.trim();
+            const lastName = document.querySelector('[name="last_name"]').value.trim();
+            const specialty = document.querySelector('[name="specialty"]').value.trim();
+            const email = document.querySelector('[name="email"]').value.trim();
+            const password = document.querySelector('[name="password"]').value;
+            const confirmPassword = document.querySelector('[name="confirm_password"]').value;
+            const phone = document.querySelector('[name="phone"]').value.trim();
+
+            // التحقق من الحقول
+            if (!firstName || !lastName || !specialty || !email || !password || !confirmPassword || !phone) {
+                throw new Error('جميع الحقول مطلوبة');
+            }
+
+            if (!/^\d{10}$/.test(phone)) {
+                throw new Error('رقم الهاتف يجب أن يكون 10 أرقام');
+            }
+
+            if (password.length < 6) {
+                throw new Error('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+            }
+
+            if (password !== confirmPassword) {
+                throw new Error('كلمات المرور غير متطابقة');
+            }
+
+            // إنشاء الحساب
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
+
+            // تحديث بيانات المستخدم في Authentication
+            await user.updateProfile({
+                displayName: `${firstName} ${lastName}`
+            });
+
+            // حفظ البيانات في Firestore
+            await db.collection('experts').doc(user.uid).set({
+                firstName,
+                lastName,
+                specialty,
+                email,
+                phone,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                status: 'pending', // في انتظار موافقة الإدارة
+                role: 'expert',
+                fullName: `${firstName} ${lastName}`,
+                profileComplete: false,
+                expertiseLevel: '',
+                bio: '',
+                socialLinks: {
+                    linkedin: '',
+                    twitter: '',
+                    website: ''
+                },
+                education: [],
+                experience: [],
+                rating: 0,
+                reviewsCount: 0,
+                completedSessions: 0,
+                verificationStatus: {
+                    email: false,
+                    phone: false,
+                    documents: false
+                }
+            });
+
+            // حفظ دور المستخدم في localStorage للتحقق لاحقاً
+            localStorage.setItem('userRole', 'expert');
+            localStorage.setItem('expertId', user.uid);
+
+            // إظهار رسالة نجاح
+            alert('تم التسجيل بنجاح! جاري تحويلك إلى لوحة تحكم الخبراء');
+            
+            // التوجيه إلى صفحة الخبراء
+            window.location.href = 'homeexpert.html';
+
+        } catch (error) {
+            console.error('Error:', error);
+            
+            // معالجة أخطاء Firebase
+            if (error.code) {
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        alert('البريد الإلكتروني مستخدم بالفعل');
+                        break;
+                    case 'auth/weak-password':
+                        alert('كلمة المرور ضعيفة جداً');
+                        break;
+                    case 'auth/invalid-email':
+                        alert('البريد الإلكتروني غير صحيح');
+                        break;
+                    default:
+                        alert('حدث خطأ أثناء التسجيل');
+                }
+            } else {
+                // معالجة الأخطاء المخصصة
+                alert(error.message);
+            }
+        } finally {
+            // إعادة تفعيل الزر
+            submitButton.disabled = false;
+            submitButton.innerHTML = 'تسجيل';
+        }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تعديل الدورة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    <div class="max-w-4xl mx-auto py-6 px-4">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">تعديل الدورة</h1>
+        <form id="editCourseForm" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="courseTitle">
+                    عنوان الدورة:
+                </label>
+                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="courseTitle" type="text" placeholder="أدخل عنوان الدورة">
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 text-sm font-bold mb-2" for="courseDescription">
+                    وصف الدورة:
+                </label>
+                <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="courseDescription" placeholder="أدخل وصف الدورة"></textarea>
+            </div>
+            <div class="flex items-center justify-between">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                    حفظ التعديلات
+                </button>
+                <a href="homeexpert.html" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+                    إلغاء
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.firebasestorage.app",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // جلب معرف الدورة من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseId = urlParams.get('id');
+
+        // تحميل بيانات الدورة
+        async function loadCourseData() {
+            try {
+                const courseDoc = await db.collection('courses').doc(courseId).get();
+                if (courseDoc.exists) {
+                    const courseData = courseDoc.data();
+                    document.getElementById('courseTitle').value = courseData.title;
+                    document.getElementById('courseDescription').value = courseData.description;
+                } else {
+                    alert('الدورة غير موجودة.');
+                    window.location.href = 'homeexpert.html';
+                }
+            } catch (error) {
+                console.error('Error loading course data:', error);
+                alert('حدث خطأ أثناء تحميل بيانات الدورة.');
+            }
+        }
+
+        // حفظ التعديلات
+        document.getElementById('editCourseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newTitle = document.getElementById('courseTitle').value;
+            const newDescription = document.getElementById('courseDescription').value;
+
+            try {
+                await db.collection('courses').doc(courseId).update({
+                    title: newTitle,
+                    description: newDescription
+                });
+
+                alert('تم تحديث الدورة بنجاح!');
+                window.location.href = 'homeexpert.html';
+            } catch (error) {
+                console.error('Error updating course:', error);
+                alert('حدث خطأ أثناء تحديث الدورة.');
+            }
+        });
+
+        // تحميل بيانات الدورة عند تحميل الصفحة
+        loadCourseData();
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تسجيل جديد</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="register.css">
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script>
+      const firebaseConfig = {
+          apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+          authDomain: "teerra-space.firebaseapp.com",
+          projectId: "teerra-space",
+          storageBucket: "teerra-space.appspot.com",
+          messagingSenderId: "416330751201",
+          appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+      };
+
+      // تهيئة Firebase
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+        <form class="form">
+            <p class="title">تسجيل جديد</p>
+            <p class="message">سجل الآن واحصل على إمكانية الوصول الكامل إلى تطبيقنا</p>
+            
+            <div class="flex">
+                <label>
+                    <input required type="text" name="first_name" class="input">
+                    <span>الاسم الأول</span>
+                </label>
+                <label>
+                    <input required type="text" name="last_name" class="input">
+                    <span>الاسم الأخير</span>
+                </label>
+            </div>  
+        
+            <label>
+                <input required type="email" name="email" class="input">
+                <span>البريد الإلكتروني</span>
+            </label> 
+            
+            <label>
+                <input required type="password" name="password" class="input">
+                <span>كلمة المرور</span>
+            </label>
+        
+            <label>
+                <input required type="password" name="confirm_password" class="input">
+                <span>تأكيد كلمة المرور</span>
+            </label>
+        
+            <label>
+                <input required type="text" name="phone" class="input">
+                <span>الهاتف</span>
+            </label>
+
+            <!-- ✅ اختيار نوع المستخدم -->
+            <label>
+              <select required name="role" class="input">
+                <option value="" disabled selected>اختر نوع المستخدم</option>
+                <option value="student">طالب</option>
+                <option value="coach">مدرب</option>
+              </select>
+              <span>نوع المستخدم</span>
+            </label>
+           
+            <button type="submit" class="submit">تسجيل</button>
+            
+            <p class="signin">هل لديك حساب؟ <a href="login.html">تسجيل الدخول</a></p>
+        </form>
+    </div>
+    <div class="right"></div>
+  </div>
+
+  <script>
+    document.querySelector('.form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const firstName = document.querySelector('input[name="first_name"]').value.trim();
+        const lastName = document.querySelector('input[name="last_name"]').value.trim();
+        const email = document.querySelector('input[name="email"]').value.trim();
+        const password = document.querySelector('input[name="password"]').value;
+        const confirmPassword = document.querySelector('input[name="confirm_password"]').value;
+        const phone = document.querySelector('input[name="phone"]').value.trim();
+        const role = document.querySelector('select[name="role"]').value;
+
+        if (!email || !password) {
+            alert("يرجى إدخال البريد الإلكتروني وكلمة المرور.");
+            return;
+        }
+
+        if (!firstName || !lastName || !email || !password || !confirmPassword || !phone || !role) {
+            alert("يرجى ملء جميع الحقول");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            alert("كلمتا المرور غير متطابقتين");
+            return;
+        }
+
+        if (!/^\d{10}$/.test(phone)) {
+            alert("رقم الهاتف يجب أن يكون مكونًا من 10 أرقام");
+            return;
+        }
+
+        try {
+            const methods = await firebase.auth().fetchSignInMethodsForEmail(email);
+            if (methods.length > 0) {
+                alert("البريد الإلكتروني مستخدم بالفعل");
+                return;
+            }
+
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            const userId = userCredential.user.uid;
+
+            await db.collection("users").doc(userId).set({
+                firstName,
+                lastName,
+                email,
+                phone,
+                role, // ✅ حفظ الدور
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert("تم التسجيل بنجاح!");
+            window.location.href = 'welcome.html';
+        } catch (error) {
+            console.error("Error during registration:", error);
+            alert(error.message);
+        }
+    });
+  </script>
+
+  <script type="text/plain" id="firestore-rules">
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow create: if request.auth != null;
+    }
+  }
+}
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Split Screen Form</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <style>
+    /* إضافة CSS هنا */
+    input {
+        pointer-events: auto !important;
+        opacity: 1 !important;
+    }
+  </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <!-- تهيئة Firebase -->
+  <script>
+      const firebaseConfig = {
+          apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+          authDomain: "teerra-space.firebaseapp.com",
+          projectId: "teerra-space",
+          storageBucket: "teerra-space.appspot.com",
+          messagingSenderId: "416330751201",
+          appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+  </script>
+</head>
+<body>
+  <div class="container">
+    <div class="left">
+        
+      <form class="form" id="loginForm">
+        <p class="title">تسجيل دخول</p>
+        <p class="message">سجل الآن واحصل على إمكانية الوصول الكامل إلى تطبيقنا</p>
+    
+        <label>
+            <input required type="email" name="email" class="input">
+            <span>البريد الإلكتروني</span>
+        </label> 
+    
+        <label>
+            <input required type="password" name="password" class="input">
+            <span>كلمة المرور</span>
+        </label>
+    
+        <button type="submit" class="submit">تسجيل</button>
+    
+        <p class="signin">ليس لديك حساب؟ <a href="register.html">إنشاء حساب</a></p>
+        <p class="signin">هل أنت خبير؟ <a href="loginexpert.html">قم بالتسجيل كخبير</a></p>
+    </form>
+    
+    </div>
+    <div class="right"></div>
+    
+    
+  </div>
+
+  <script>
+    loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    try {
+        const email = document.querySelector('input[name="email"]').value.trim();
+        const password = document.querySelector('input[name="password"]').value;
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = 'جاري تسجيل الدخول...';
+
+        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        const userDoc = await db.collection('users').doc(user.uid).get();
+
+        if (userDoc.exists) {
+            const userData = userDoc.data();
+
+            // حفظ معلومات المستخدم
+            localStorage.setItem('userName', `${userData.firstName} ${userData.lastName}`);
+            localStorage.setItem('userRole', userData.role);
+
+            // ✅ التوجيه حسب الدور
+            if (userData.role === 'coach') {
+                window.location.href = 'homeexpert.html';
+            } else if (userData.role === 'student') {
+                window.location.href = 'home.html';
+            } else {
+                throw new Error('نوع المستخدم غير معروف');
+            }
+        } else {
+            throw new Error('لم يتم العثور على بيانات المستخدم');
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+
+        let errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
+        if (error.code === 'auth/user-not-found') {
+            errorMessage = 'البريد الإلكتروني غير مسجل';
+        } else if (error.code === 'auth/wrong-password') {
+            errorMessage = 'كلمة المرور غير صحيحة';
+        } else if (error.code === 'auth/invalid-email') {
+            errorMessage = 'البريد الإلكتروني غير صالح';
+        }
+
+        alert(errorMessage);
+
+        const submitButton = this.querySelector('button[type="submit"]');
+        submitButton.disabled = false;
+        submitButton.textContent = 'تسجيل الدخول';
+    }
+});
+
+  </script>
+
+  <script type="text/plain" id="firestore-rules">
+
+
+  </script>
+</body>
+</html>

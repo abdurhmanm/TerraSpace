@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الدروس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-2xl font-bold mb-6">إضافة درس جديد</h1>
+        
+        <form id="lessonForm" class="bg-gray-800 rounded-lg p-6">
+            <div class="mb-4">
+                <label class="block mb-2">اختر الدورة:</label>
+                <select id="courseSelect" class="w-full bg-gray-700 text-white rounded p-2">
+                    <option value="">اختر الدورة...</option>
+                </select>
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-2">عنوان الدرس:</label>
+                <input type="text" id="lessonTitle" class="w-full bg-gray-700 text-white rounded p-2" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-2">رابط الفيديو:</label>
+                <input type="url" id="videoUrl" class="w-full bg-gray-700 text-white rounded p-2" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-2">وصف الدرس:</label>
+                <textarea id="lessonDescription" class="w-full bg-gray-700 text-white rounded p-2 h-32" required></textarea>
+            </div>
+
+            <div class="mb-4">
+                <label class="block mb-2">ترتيب الدرس:</label>
+                <input type="number" id="lessonOrder" class="w-full bg-gray-700 text-white rounded p-2" required>
+            </div>
+
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                إضافة الدرس
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.appspot.com",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // تحميل قائمة الدورات
+        async function loadCourses() {
+            const coursesSnapshot = await db.collection('courses').get();
+            const courseSelect = document.getElementById('courseSelect');
+            
+            coursesSnapshot.forEach(doc => {
+                const course = doc.data();
+                const option = document.createElement('option');
+                option.value = doc.id;
+                option.textContent = course.title;
+                courseSelect.appendChild(option);
+            });
+        }
+
+        // إضافة درس جديد
+        document.getElementById('lessonForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const courseId = document.getElementById('courseSelect').value;
+            const lessonData = {
+                title: document.getElementById('lessonTitle').value,
+                video_url: document.getElementById('videoUrl').value,
+                description: document.getElementById('lessonDescription').value,
+                order: parseInt(document.getElementById('lessonOrder').value),
+                created_at: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                await db.collection('courses').doc(courseId)
+                    .collection('lessons').add(lessonData);
+                
+                alert('تم إضافة الدرس بنجاح!');
+                document.getElementById('lessonForm').reset();
+            } catch (error) {
+                console.error('Error adding lesson:', error);
+                alert('حدث خطأ في إضافة الدرس');
+            }
+        });
+
+        // التحقق من المصادقة وتحميل الدورات
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadCourses();
+            } else {
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>

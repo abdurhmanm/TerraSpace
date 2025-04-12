@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإحصائيات | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">إحصائيات المنصة</h1>
+            <p class="text-gray-400">تحليلات تفصيلية لأداء دوراتك وتفاعل الطلاب</p>
+        </div>
+
+        <!-- أزرار التصفية -->
+        <div class="mb-8 flex flex-wrap gap-4 justify-center">
+            <button onclick="filterStats('week')" 
+                    class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                آخر أسبوع
+            </button>
+            <button onclick="filterStats('month')" 
+                    class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                آخر شهر
+            </button>
+            <button onclick="filterStats('year')" 
+                    class="bg-[#2a2a2a] text-[#46b3e6] px-6 py-2 rounded-lg hover:bg-[#46b3e6] hover:text-white transition-all">
+                آخر سنة
+            </button>
+        </div>
+
+        <!-- بطاقات الإحصائيات -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- معدل إكمال الدورات -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">معدل إكمال الدورات</h3>
+                    <i class="fas fa-graduation-cap text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">75%</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +5% من الشهر الماضي
+                </div>
+            </div>
+
+            <!-- متوسط تقييم الدورات -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">متوسط التقييم</h3>
+                    <i class="fas fa-star text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">4.8</div>
+                <div class="text-gray-400 text-sm mt-2">
+                    من 5.0 نجوم
+                </div>
+            </div>
+
+            <!-- عدد الطلاب النشطين -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">الطلاب النشطين</h3>
+                    <i class="fas fa-users text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">156</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +12 هذا الشهر
+                </div>
+            </div>
+
+            <!-- معدل التفاعل -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-[#46b3e6]">معدل التفاعل</h3>
+                    <i class="fas fa-comments text-2xl text-[#46b3e6]"></i>
+                </div>
+                <div class="text-3xl font-bold">82%</div>
+                <div class="text-green-500 text-sm mt-2">
+                    <i class="fas fa-arrow-up"></i>
+                    +8% من الشهر الماضي
+                </div>
+            </div>
+        </div>
+
+        <!-- الرسوم البيانية -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- نشاط الطلاب -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <h3 class="text-xl font-bold text-[#46b3e6] mb-4">نشاط الطلاب</h3>
+                <canvas id="studentActivityChart"></canvas>
+            </div>
+
+            <!-- تقييمات الدورات -->
+            <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+                <h3 class="text-xl font-bold text-[#46b3e6] mb-4">تقييمات الدورات</h3>
+                <canvas id="courseRatingsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // تهيئة الرسوم البيانية
+        function initCharts() {
+            // رسم بياني لنشاط الطلاب
+            const activityCtx = document.getElementById('studentActivityChart').getContext('2d');
+            new Chart(activityCtx, {
+                type: 'line',
+                data: {
+                    labels: ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'],
+                    datasets: [{
+                        label: 'نشاط الطلاب',
+                        data: [65, 72, 85, 78, 90, 85, 70],
+                        borderColor: '#46b3e6',
+                        backgroundColor: 'rgba(70, 179, 230, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#fff' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+
+            // رسم بياني للتقييمات
+            const ratingsCtx = document.getElementById('courseRatingsChart').getContext('2d');
+            new Chart(ratingsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['تطوير الويب', 'الذكاء الاصطناعي', 'أمن المعلومات', 'تحليل البيانات'],
+                    datasets: [{
+                        label: 'تقييم الدورات',
+                        data: [4.8, 4.6, 4.9, 4.7],
+                        backgroundColor: '#46b3e6'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: '#fff' }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#fff' }
+                        },
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { color: '#fff' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // تحديث الإحصائيات حسب الفترة المحددة
+        function filterStats(period) {
+            fetch(`get_statistics.php?period=${period}`)
+                .then(response => response.json())
+                .then(data => {
+                    // تحديث البيانات في الصفحة
+                    console.log('Filtering by:', period);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // تهيئة الرسوم البيانية عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initCharts);
+    </script>
+</body>
+</html>

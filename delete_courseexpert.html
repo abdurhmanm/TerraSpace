@@ -1,0 +1,37 @@
+<?php
+session_start();
+header('Content-Type: application/json');
+
+if (!isset($_SESSION["expert_id"])) {
+    echo json_encode(['success' => false, 'message' => 'غير مصرح بالوصول']);
+    exit();
+}
+
+$data = json_decode(file_get_contents('php://input'), true);
+$course_id = $data['id'] ?? null;
+
+if (!$course_id) {
+    echo json_encode(['success' => false, 'message' => 'معرف الدورة مطلوب']);
+    exit();
+}
+
+$conn = new mysqli("localhost", "root", "", "tira_space");
+if ($conn->connect_error) {
+    echo json_encode(['success' => false, 'message' => 'خطأ في الاتصال']);
+    exit();
+}
+
+$expert_id = $_SESSION["expert_id"];
+$sql = "DELETE FROM courses WHERE id = ? AND expert_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ii", $course_id, $expert_id);
+
+if ($stmt->execute()) {
+    echo json_encode(['success' => true, 'message' => 'تم حذف الدورة بنجاح']);
+} else {
+    echo json_encode(['success' => false, 'message' => 'فشل حذف الدورة']);
+}
+
+$stmt->close();
+$conn->close();
+?>

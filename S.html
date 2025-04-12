@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الدورات</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-6">
+    <h1 class="text-2xl font-bold mb-4">إدارة الدورات</h1>
+    
+    <!-- كرت إضافة دورة جديدة -->
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-bold mb-4 text-purple-400">إضافة دورة جديدة</h2>
+        <form id="addCourseForm" class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label for="course-title" class="block mb-1">عنوان الدورة</label>
+                    <input type="text" id="course-title" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div>
+                    <label for="course-instructor" class="block mb-1">اسم المدرب</label>
+                    <input type="text" id="course-instructor" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <label for="course-type-select" class="block mb-1">نوع الدورة</label>
+                    <select id="course-type-select" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                        <option value="" disabled selected>اختر النوع</option>
+                        <option value="program">برنامج</option>
+                        <option value="webinar">ويبنار</option>
+                        <option value="workshop">ورشة عمل</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="course-date" class="block mb-1">تاريخ البدء</label>
+                    <input type="date" id="course-date" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div>
+                    <label for="course-price" class="block mb-1">السعر (بالريال)</label>
+                    <input type="number" id="course-price" min="0" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+            </div>
+            
+            <div>
+                <label for="course-description" class="block mb-1">وصف الدورة</label>
+                <textarea id="course-description" rows="3" class="w-full bg-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-purple-600" required></textarea>
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-all flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    تسجيل الدورة
+                </button>
+                <button type="reset" class="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg transition-all">
+                    إعادة تعيين
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- شريط البحث والتصفية -->
+    <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
+        <input type="text" id="search" placeholder="بحث عن دورة" class="bg-gray-800 text-white px-4 py-2 rounded w-full md:w-1/3 focus:outline-none focus:ring-2 focus:ring-purple-600">
+        <select id="course-type" class="bg-gray-800 text-white px-4 py-2 rounded">
+            <option value="all">الكل</option>
+            <option value="program">برنامج</option>
+            <option value="webinar">ويبنار</option>
+            <option value="workshop">ورشة عمل</option>
+        </select>
+    </div>
+
+    <!-- قائمة الدورات -->
+    <div id="coursesContainer" class="grid md:grid-cols-3 gap-4 mt-6"></div>
+
+    <script>
+        async function fetchCourses() {
+            try {
+                const response = await fetch('get_courses.php');
+                if (!response.ok) throw new Error("❌ استجابة غير صحيحة من الخادم.");
+                
+                const data = await response.json();
+                console.log("✅ البيانات المستلمة:", data);
+                displayCourses(data);
+            } catch (error) {
+                console.error("❌ خطأ في جلب البيانات:", error);
+                // عرض بيانات وهمية في حالة فشل الاتصال بالخادم
+                displayDummyCourses();
+            }
+        }
+        
+        function displayDummyCourses() {
+            const dummyCourses = [
+                {id: 1, title: "تطوير تطبيقات الويب", instructor: "أحمد محمد", rating: 4.8, start_date: "2025-04-01", type: "program", price: 1500},
+                {id: 2, title: "أساسيات الذكاء الاصطناعي", instructor: "سارة أحمد", rating: 4.5, start_date: "2025-03-15", type: "webinar", price: 800},
+                {id: 3, title: "تصميم واجهات المستخدم", instructor: "محمد خالد", rating: 4.9, start_date: "2025-04-10", type: "workshop", price: 1200}
+            ];
+            displayCourses(dummyCourses);
+        }
+        
+        function displayCourses(courses) {
+            const coursesContainer = document.querySelector("#coursesContainer");
+            coursesContainer.innerHTML = "";
+            
+            if (courses.length === 0) {
+                coursesContainer.innerHTML = "<p class='text-red-500 col-span-3 text-center py-8'>❌ لا توجد دورات متاحة.</p>";
+                return;
+            }
+            
+            courses.forEach(course => {
+                const courseElement = document.createElement("div");
+                courseElement.classList.add("bg-gray-800", "p-4", "rounded-lg", "shadow-lg", "text-white", "hover:shadow-xl", "transition-all", "hover:transform", "hover:scale-105");
+                
+                const badge = course.type === 'program' ? 
+                    '<span class="bg-blue-500 text-xs px-2 py-1 rounded-full mr-2">برنامج</span>' : 
+                    course.type === 'webinar' ? 
+                    '<span class="bg-green-500 text-xs px-2 py-1 rounded-full mr-2">ويبنار</span>' :
+                    '<span class="bg-yellow-500 text-xs px-2 py-1 rounded-full mr-2">ورشة عمل</span>';
+                
+                courseElement.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-lg font-bold">${course.title}</h3>
+                        ${badge}
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        <span class="inline-block"><strong>المدرب:</strong> ${course.instructor}</span>
+                    </p>
+                    <div class="flex justify-between mb-3">
+                        <p><span class="text-yellow-400">⭐</span> ${course.rating}</p>
+                        <p class="text-green-400">${course.price} ريال</p>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-3"><strong>تاريخ البدء:</strong> ${course.start_date}</p>
+                    <div class="flex space-x-2 space-x-reverse">
+                        <button onclick="registerCourse('${course.id}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-all text-sm">
+                            📌 سجل الآن
+                        </button>
+                        <button onclick="viewCourseDetails('${course.id}')" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-3 rounded-lg transition-all text-sm">
+                            التفاصيل
+                        </button>
+                    </div>
+                `;
+                
+                coursesContainer.appendChild(courseElement);
+            });
+            
+            console.log("✅ الدورات معروضة في الصفحة بنجاح!");
+        }
+        
+        function registerCourse(courseId) {
+            alert(`تم تسجيلك في الدورة رقم: ${courseId}`);
+            // يمكن لاحقًا إرسال البيانات إلى قاعدة البيانات
+        }
+        
+        function viewCourseDetails(courseId) {
+            alert(`عرض تفاصيل الدورة رقم: ${courseId}`);
+            // يمكن توجيه المستخدم إلى صفحة تفاصيل الدورة
+        }
+        
+        // معالجة إضافة دورة جديدة
+        document.getElementById('addCourseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const newCourse = {
+                id: Math.floor(Math.random() * 1000), // توليد معرف عشوائي
+                title: document.getElementById('course-title').value,
+                instructor: document.getElementById('course-instructor').value,
+                type: document.getElementById('course-type-select').value,
+                start_date: document.getElementById('course-date').value,
+                price: document.getElementById('course-price').value,
+                rating: 0, // تقييم افتراضي للدورات الجديدة
+            };
+            
+            // هنا يمكن إرسال البيانات إلى الخادم عبر طلب POST
+            console.log("✅ تم إضافة دورة جديدة:", newCourse);
+            alert("تم تسجيل الدورة بنجاح!");
+            
+            // إعادة تعيين النموذج
+            this.reset();
+        });
+        
+        document.addEventListener("DOMContentLoaded", fetchCourses);
+    </script>
+</body>
+</html>

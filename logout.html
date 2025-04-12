@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الخروج | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen flex items-center justify-center">
+    <div class="text-center p-8 bg-[#2a2a2a] rounded-lg shadow-xl max-w-md w-full mx-4">
+        <div class="mb-6">
+            <i class="fas fa-sign-out-alt text-[#46b3e6] text-5xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-[#46b3e6] mb-4">جاري تسجيل الخروج...</h1>
+        <p class="text-gray-400 mb-6">شكراً لك على استخدام منصة تيرا سبيس</p>
+        <div class="animate-spin mb-6">
+            <i class="fas fa-circle-notch text-[#46b3e6] text-3xl"></i>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // تنفيذ تسجيل الخروج
+        auth.signOut()
+            .then(() => {
+                // إزالة أي بيانات محفوظة محلياً
+                localStorage.clear();
+                sessionStorage.clear();
+
+                // توجيه المستخدم إلى الصفحة الرئيسية
+                window.location.replace('index.html');
+            })
+            .catch((error) => {
+                console.error('Error during logout:', error);
+                alert('حدث خطأ أثناء تسجيل الخروج');
+                // توجيه المستخدم إلى الصفحة الرئيسية حتى في حالة الخطأ
+                window.location.replace('index.html');
+            });
+    </script>
+</body>
+</html>

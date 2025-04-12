@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إضافة دورة جديدة | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+</head>
+<!-- تغيير لون الخلفية ليتناسق مع الصفحة الرئيسية -->
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-3xl mx-auto bg-[#2a2a2a] rounded-lg shadow-xl p-8">
+        <!-- عنوان الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">إضافة دورة جديدة</h1>
+            <p class="text-gray-400">قم بملء النموذج التالي لإضافة دورة جديدة</p>
+        </div>
+
+        <form id="addCourseForm" class="space-y-6">
+            <!-- اسم الدورة والمدرب -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">اسم الدورة</label>
+                    <input type="text" id="title" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           required>
+                </div>
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">اسم المدرب</label>
+                    <input type="text" id="coach" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           required>
+                </div>
+            </div>
+
+            <!-- التصنيف والمدة -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">التصنيف</label>
+                    <select id="category" 
+                            class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all"
+                            required>
+                        <option value="">اختر التصنيف</option>
+                        <option value="web">تطوير الويب</option>
+                        <option value="ai">الذكاء الاصطناعي</option>
+                        <option value="mobile">تطوير التطبيقات</option>
+                        <option value="data">علوم البيانات</option>
+                        <option value="design">التصميم</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">مدة الدورة</label>
+                    <input type="text" id="duration" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           placeholder="مثال: 6 أسابيع"
+                           required>
+                </div>
+            </div>
+
+            <!-- رابط الدورة -->
+            <div>
+                <label class="block text-[#46b3e6] mb-2">رابط الدورة</label>
+                <div class="flex gap-2">
+                    <input type="url" id="course_url" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           placeholder="https://example.com/course"
+                           pattern="https?://.+"
+                           required>
+                    <button type="button" 
+                            onclick="validateUrl()"
+                            class="bg-[#3a3a3a] border border-[#46b3e6] text-[#46b3e6] rounded-lg px-4 hover:bg-[#46b3e6] hover:text-white transition-all">
+                        <i class="fas fa-link"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-gray-400 mt-1">أدخل رابط صفحة الدورة كاملاً مع http:// أو https://</p>
+            </div>
+
+            <!-- تاريخ البدء والتقييم -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">تاريخ البدء</label>
+                    <input type="date" id="start_date" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           required>
+                </div>
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">التقييم</label>
+                    <input type="number" id="rating" 
+                           class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all" 
+                           min="0" max="5" step="0.1"
+                           placeholder="مثال: 4.5"
+                           required>
+                </div>
+            </div>
+
+            <!-- وصف الدورة -->
+            <div>
+                <label class="block text-[#46b3e6] mb-2">وصف الدورة</label>
+                <textarea id="description" 
+                         class="w-full bg-[#3a3a3a] border border-[#46b3e6] text-white rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#2c6eaf] transition-all h-32 resize-none" 
+                         required></textarea>
+            </div>
+
+            <!-- زر الإرسال -->
+            <button type="submit" 
+                    class="w-full bg-gradient-to-r from-[#46b3e6] to-[#2c6eaf] text-white rounded-lg px-6 py-3 font-medium hover:from-[#2c6eaf] hover:to-[#1d4e80] focus:outline-none focus:ring-2 focus:ring-[#46b3e6] focus:ring-offset-2 focus:ring-offset-[#2a2a2a] transform hover:-translate-y-0.5 transition-all">
+                <i class="fas fa-plus-circle ml-2"></i>
+                إضافة الدورة
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // تعديل تهيئة Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.appspot.com",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // إضافة دالة جديدة لجلب الدورات
+        async function loadCourses() {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    console.error('لم يتم العثور على مستخدم');
+                    return;
+                }
+
+                console.log('جاري جلب الدورات للمستخدم:', user.uid);
+
+                const coursesSnapshot = await db.collection('courses')
+                    .where('coachId', '==', user.uid)
+                    .orderBy('createdAt', 'desc')
+                    .get();
+
+                console.log('تم جلب الدورات:', coursesSnapshot.size);
+
+                // إضافة قسم لعرض الدورات الحالية
+                const coursesContainer = document.createElement('div');
+                coursesContainer.className = 'mt-8 space-y-4';
+                coursesContainer.innerHTML = `
+                    <h2 class="text-2xl font-bold text-[#46b3e6] mb-4">دوراتي المضافة</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="myCourses">
+                    ${
+                        coursesSnapshot.empty ? 
+                        '<p class="text-gray-400 col-span-2 text-center">لم تقم بإضافة أي دورات بعد</p>' :
+                        coursesSnapshot.docs.map(doc => {
+                            const course = doc.data();
+                            return `
+                                <div class="bg-[#3a3a3a] rounded-lg p-4 relative">
+                                    <img src="${course.imageUrl}" alt="${course.title}" 
+                                         class="w-full h-40 object-cover rounded-lg mb-3">
+                                    <h3 class="text-lg font-bold mb-2">${course.title}</h3>
+                                    <p class="text-gray-400 text-sm mb-2">المدرب: ${course.coach}</p>
+                                    <p class="text-gray-400 text-sm mb-2">التصنيف: ${course.category}</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <span class="text-[#46b3e6]">${course.duration}</span>
+                                        <button onclick="deleteCourse('${doc.id}')" 
+                                                class="text-red-500 hover:text-red-700">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')
+                    }
+                    </div>
+                `;
+
+                // إضافة قسم الدورات بعد نموذج الإضافة
+                document.querySelector('#addCourseForm').after(coursesContainer);
+
+            } catch (error) {
+                console.error('Error loading courses:', error);
+                alert('حدث خطأ في جلب الدورات');
+            }
+        }
+
+        // دالة لحذف دورة
+        async function deleteCourse(courseId) {
+            if (!confirm('هل أنت متأكد من حذف هذه الدورة؟')) return;
+
+            try {
+                await db.collection('courses').doc(courseId).delete();
+                alert('تم حذف الدورة بنجاح');
+                // إعادة تحميل الدورات
+                location.reload();
+            } catch (error) {
+                console.error('Error deleting course:', error);
+                alert('حدث خطأ في حذف الدورة');
+            }
+        }
+
+        // التحقق من حالة تسجيل الدخول والصلاحيات
+        auth.onAuthStateChanged(async (user) => {
+            try {
+                // إضافة console.log للتأكد من استدعاء الدالة
+                console.log("التحقق من المستخدم...");
+
+                if (!user) {
+                    console.log("لم يتم تسجيل الدخول");
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                console.log("تم العثور على مستخدم:", user.uid);
+
+                // التحقق من بيانات المستخدم في Firestore
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (!userDoc.exists || userDoc.data().role !== 'coach') {
+                    alert('ليس لديك الصلاحيات لإضافة دورة.');
+                    return;
+                }
+
+                console.log("بيانات المستخدم:", userDoc.exists ? userDoc.data() : "غير موجود");
+
+                if (!userDoc.exists) {
+                    alert('لم يتم العثور على بيانات المستخدم');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const userData = userDoc.data();
+                if (userData.role !== 'coach') {
+                    alert('هذه الصفحة مخصصة للخبراء فقط');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // تحميل الدورات بعد التأكد من الصلاحيات
+                console.log("جاري تحميل الدورات للخبير:", userData.firstName);
+                await loadCourses();
+
+            } catch (error) {
+                console.error('خطأ في التحقق:', error);
+                alert('حدث خطأ في التحقق من الصلاحيات');
+            }
+        });
+
+        // تعديل معالج إضافة الدورة
+        document.getElementById("addCourseForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            try {
+                const title = document.getElementById("title").value.trim();
+                const coach = document.getElementById("coach").value.trim();
+                const category = document.getElementById("category").value.trim();
+                const duration = document.getElementById("duration").value.trim();
+                const courseUrl = document.getElementById("course_url").value.trim();
+                const startDate = document.getElementById("start_date").value.trim();
+                const rating = document.getElementById("rating").value.trim();
+                const description = document.getElementById("description").value.trim();
+
+                if (!title || !coach || !category || !duration || !courseUrl || !startDate || !rating || !description) {
+                    alert("❌ يرجى ملء جميع الحقول المطلوبة.");
+                    return;
+                }
+
+                const user = auth.currentUser;
+                if (!user) throw new Error('يجب تسجيل الدخول أولاً');
+
+                // إنشاء معرف فريد للدورة
+                const courseId = `CRS-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+                // إنشاء كائن بيانات الدورة مع المعرف
+                const courseData = {
+                    courseId: courseId, // إضافة معرف الدورة
+                    title,
+                    coach,
+                    category,
+                    duration,
+                    course_url: courseUrl,
+                    start_date: startDate,
+                    rating: Number(rating),
+                    description,
+                    expertId: auth.currentUser.uid,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                // إضافة الدورة إلى Firestore مع المعرف المخصص
+                await db.collection('courses').doc(courseId).set(courseData);
+
+                alert("✅ تم إضافة الدورة بنجاح!");
+                document.getElementById("addCourseForm").reset();
+                
+                // إعادة التوجيه إلى صفحة الدورات
+                window.location.href = 'homeexpert.html';
+
+            } catch (error) {
+                console.error("❌ خطأ:", error);
+                alert("❌ حدث خطأ أثناء إضافة الدورة: " + error.message);
+            }
+        });
+
+        function validateUrl() {
+            const urlInput = document.getElementById('course_url');
+            const url = urlInput.value;
+
+            try {
+                new URL(url);
+                urlInput.setCustomValidity('');
+                alert('✅ الرابط صحيح');
+            } catch (error) {
+                urlInput.setCustomValidity('الرجاء إدخال رابط صحيح يبدأ بـ http:// أو https://');
+                alert('❌ الرجاء إدخال رابط صحيح');
+            }
+        }
+    </script>
+
+    <script type="text/plain" id="firestore-rules">
+        // Firestore Rules
+        rules_version = '2';
+        service cloud.firestore {
+          match /databases/{database}/documents {
+            match /courses/{courseId} {
+              allow read: if true;
+              allow create, update: if request.auth != null 
+                && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'coach';
+            }
+          }
+        }
+    </script>
+    
+    
+    <script type="text/plain" id="storage-rules">
+        // Storage Rules
+        rules_version = '2';
+        service firebase.storage {
+          match /b/{bucket}/o {
+            match /courses/{fileName} {
+              allow read: if true;
+              allow write: if request.auth != null 
+                && request.resource.size < 5 * 1024 * 1024
+                && request.resource.contentType.matches('image/.*');
+            }
+          }
+        }
+    </script>
+</body>
+</html>
+``` 

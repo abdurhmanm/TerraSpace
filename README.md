@@ -1,2 +1,1 @@
-# TerraSpace
-.
+# teraadatabase

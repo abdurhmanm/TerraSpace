@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التواصل | تيرا سبيس</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
+    <!-- زر العودة -->
+    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
+        <i class="fas fa-arrow-right ml-2"></i>
+        العودة للرئيسية
+    </a>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- رأس الصفحة -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[#46b3e6] mb-2">التواصل مع الطلاب</h1>
+            <p class="text-gray-400">إرسال الرسائل والإعلانات للطلاب المسجلين في دوراتك</p>
+        </div>
+
+        <!-- نموذج إرسال رسالة جديدة -->
+        <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl mb-8">
+            <h2 class="text-xl font-bold text-[#46b3e6] mb-4">رسالة جديدة</h2>
+            <form id="messageForm" class="space-y-4">
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">نوع الرسالة</label>
+                    <select id="messageType" name="messageType" 
+                            class="w-full bg-[#3a3a3a] text-white px-4 py-2 rounded-lg border border-[#46b3e6] focus:outline-none">
+                        <option value="email">بريد إلكتروني</option>
+                        <option value="notification">إشعار</option>
+                        <option value="announcement">إعلان عام</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">اختيار المستلمين</label>
+                    <select id="recipients" name="recipients" multiple
+                            class="w-full bg-[#3a3a3a] text-white px-4 py-2 rounded-lg border border-[#46b3e6] focus:outline-none min-h-[100px]">
+                        <!-- سيتم تعبئة هذا الحقل من قاعدة البيانات -->
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[#46b3e6] mb-2">نص الرسالة</label>
+                    <textarea id="messageContent" name="messageContent" rows="4"
+                             class="w-full bg-[#3a3a3a] text-white px-4 py-2 rounded-lg border border-[#46b3e6] focus:outline-none"></textarea>
+                </div>
+
+                <button type="submit" 
+                        class="bg-gradient-to-r from-[#46b3e6] to-[#2c6eaf] text-white px-6 py-2 rounded-lg hover:from-[#2c6eaf] hover:to-[#1d4e80] transition-all">
+                    <i class="fas fa-paper-plane ml-2"></i>
+                    إرسال
+                </button>
+            </form>
+        </div>
+
+        <!-- سجل الرسائل -->
+        <div class="bg-[#2a2a2a] p-6 rounded-lg shadow-xl">
+            <h2 class="text-xl font-bold text-[#46b3e6] mb-4">سجل الرسائل</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-[#1a1a1a]">
+                        <tr>
+                            <th class="py-3 px-4 text-right">التاريخ</th>
+                            <th class="py-3 px-4 text-right">النوع</th>
+                            <th class="py-3 px-4 text-right">المستلم</th>
+                            <th class="py-3 px-4 text-right">الحالة</th>
+                            <th class="py-3 px-4 text-right">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="messagesTable" class="divide-y divide-[#3a3a3a]">
+                        <!-- سيتم تعبئة هذا الجدول من قاعدة البيانات -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRecipients();
+            loadMessages();
+
+            document.getElementById('messageForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+        });
+
+        function loadRecipients() {
+            fetch('get_recipients.php')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('recipients');
+                    data.forEach(student => {
+                        const option = document.createElement('option');
+                        option.value = student.id;
+                        option.textContent = student.name;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(error => showAlert('فشل تحميل قائمة المستلمين', 'error'));
+        }
+
+        function loadMessages() {
+            fetch('get_messages.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('messagesTable');
+                    tbody.innerHTML = data.map(message => `
+                        <tr class="hover:bg-[#3a3a3a]">
+                            <td class="py-3 px-4">${message.created_at}</td>
+                            <td class="py-3 px-4">${getMessageTypeText(message.message_type)}</td>
+                            <td class="py-3 px-4">${message.recipient_name}</td>
+                            <td class="py-3 px-4">${getStatusBadge(message.status)}</td>
+                            <td class="py-3 px-4">
+                                <button onclick="resendMessage(${message.id})" class="text-[#46b3e6] hover:text-[#2c6eaf]">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => showAlert('فشل تحميل سجل الرسائل', 'error'));
+        }
+
+        function sendMessage() {
+            const formData = new FormData(document.getElementById('messageForm'));
+            fetch('send_message.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('تم إرسال الرسالة بنجاح', 'success');
+                    document.getElementById('messageForm').reset();
+                    loadMessages();
+                } else {
+                    throw new Error(data.message);
+                }
+            })
+            .catch(error => showAlert(error.message || 'فشل إرسال الرسالة', 'error'));
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `fixed top-4 right-4 p-4 rounded-lg ${
+                type === 'success' ? 'bg-green-500' : 'bg-red-500'
+            } text-white z-50`;
+            alertDiv.textContent = message;
+            document.body.appendChild(alertDiv);
+            setTimeout(() => alertDiv.remove(), 3000);
+        }
+
+        function getMessageTypeText(type) {
+            const types = {
+                email: 'بريد إلكتروني',
+                notification: 'إشعار',
+                announcement: 'إعلان عام'
+            };
+            return types[type] || type;
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                sent: '<span class="bg-blue-500 text-white px-2 py-1 rounded-full text-sm">تم الإرسال</span>',
+                delivered: '<span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-sm">تم التسليم</span>',
+                read: '<span class="bg-green-500 text-white px-2 py-1 rounded-full text-sm">تمت القراءة</span>'
+            };
+            return badges[status] || status;
+        }
+    </script>
+</body>
+</html>
