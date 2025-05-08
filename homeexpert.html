@@ -19,7 +19,7 @@
 
                 <!-- روابط التنقل -->
                 <div class="hidden md:flex items-center space-x-4 space-x-reverse">
-                    <a href="#" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">الرئيسية</a>
+                    <a href="homeexpert.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">الرئيسية</a>
                     <a href="add_course.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">
                         <i class="fas fa-plus-circle ml-1"></i>
                         إضافة دورة
@@ -32,8 +32,13 @@
                         <i class="fas fa-users ml-1"></i>
                         إدارة الطلاب
                     </a>
-                    <a href="#" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">جلساتي</a>
-                    <a href="#" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">الإحصائيات</a>
+                    <a href="sessions.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">جلساتي</a>
+                    <a href="expert_profile.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md flex items-center">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-circle text-white text-2xl"></i>
+                        </div>
+                        <span class="ml-2">ملفي الشخصي</span>
+                    </a>
                     <button onclick="logout()" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-md flex items-center">
                         <i class="fas fa-sign-out-alt ml-1"></i>
                         تسجيل الخروج
@@ -41,31 +46,28 @@
                 </div>
 
                 <!-- قائمة المستخدم -->
-                <div class="flex items-center">
-                    <div class="relative" id="userMenu">
-                        <button class="flex items-center space-x-3 space-x-reverse focus:outline-none">
-                            <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span class="text-white text-sm font-bold" id="userInitials"></span>
-                            </div>
-                            <span class="text-gray-700" id="userName">اسم الخبير</span>
-                        </button>
-                        <!-- القائمة المنسدلة -->
-                        <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-50" id="userDropdown">
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-user-circle ml-1"></i>
-                                الملف الشخصي
-                            </a>
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-cog ml-1"></i>
-                                الإعدادات
-                            </a>
-                            <div class="border-t border-gray-100"></div>
-                            <button onclick="logout()" 
-                                    class="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
-                                <i class="fas fa-sign-out-alt ml-1"></i>
-                                تسجيل الخروج
-                            </button>
+                <div class="relative" id="userMenu">
+                    <button class="flex items-center space-x-3 space-x-reverse focus:outline-none">
+                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                            <i class="fas fa-user-circle text-white text-2xl"></i>
                         </div>
+                    </button>
+                    <!-- القائمة المنسدلة -->
+                    <div class="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg hidden z-50" id="userDropdown">
+                        <a href="expert_profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                            <i class="fas fa-user-circle ml-1"></i>
+                            الملف الشخصي
+                        </a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                            <i class="fas fa-cog ml-1"></i>
+                            الإعدادات
+                        </a>
+                        <div class="border-t border-gray-100"></div>
+                        <button onclick="logout()" 
+                                class="w-full text-right px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center">
+                            <i class="fas fa-sign-out-alt ml-1"></i>
+                            تسجيل الخروج
+                        </button>
                     </div>
                 </div>
             </div>
@@ -212,32 +214,32 @@
         // تحديث دالة تسجيل الخروج
         async function logout() {
             try {
-                const confirmLogout = confirm('هل أنت متأكد من تسجيل الخروج؟');
+                const confirmLogout = confirm('هل أنت متأكد أنك تريد تسجيل الخروج؟');
                 
                 if (confirmLogout) {
-                    await firebase.auth().signOut();
-                    
-                    // مسح بيانات الجلسة
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    
-                    // تعطيل العودة للصفحة السابقة
-                    window.history.pushState(null, '', 'index.html');
-                    window.onpopstate = function() {
-                        window.history.pushState(null, '', 'index.html');
-                    };
-                    
-                    // إعادة توجيه المستخدم إلى صفحة index.html
-                    window.location.replace('index.html');
+                    const user = auth.currentUser;
+                    if (user) {
+                        // تسجيل الخروج من Firebase
+                        await firebase.auth().signOut();
+                        
+                        // مسح بيانات الجلسة
+                        localStorage.clear();
+                        sessionStorage.clear();
+                        
+                        // إعادة توجيه المستخدم إلى صفحة index.html
+                        window.location.replace('index.html');
+                    } else {
+                        alert('لا يوجد مستخدم مسجل دخول.');
+                    }
                 }
             } catch (error) {
-                console.error('Error during logout:', error);
+                console.error('Error during logout:', error.message);
                 alert('حدث خطأ أثناء تسجيل الخروج');
             }
         }
 
         // إظهار/إخفاء القائمة المنسدلة
-        document.getElementById('userMenu').addEventListener('click', function() {
+        document.getElementById('userMenu').addEventListener('click', function () {
             document.getElementById('userDropdown').classList.toggle('hidden');
         });
 

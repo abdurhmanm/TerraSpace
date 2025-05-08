@@ -1,0 +1,87 @@
+const coursesData = [
+    {
+        "title": "دورة تطوير الويب",
+        "field": "web-development",
+        "date": "2025-02-15",
+        "type": "program",
+        "duration": "6 أسابيع",
+        "doctor": "أ. محمد القحطاني",
+        "rating": "التقييم:4.9",
+        "image": "https://via.placeholder.com/300x200"
+    },
+    {
+        "title": "دورة الذكاء الاصطناعي",
+        "field": "ai",
+        "date": "2025-03-01",
+        "type": "webinar",
+        "duration": "8 أسابيع",
+        "doctor": "د. فاطمة الزهراني",
+        "rating": "التقييم:4.7",
+        "image": "https://via.placeholder.com/300x200"
+    }
+];
+
+document.addEventListener("DOMContentLoaded", function () {
+    displayCourses(coursesData);
+});
+
+function displayCourses(courses) {
+    const coursesContainer = document.querySelector(".courses");
+    coursesContainer.innerHTML = "";
+    courses.forEach(course => {
+        const courseElement = document.createElement("div");
+        courseElement.classList.add("course");
+        courseElement.setAttribute("data-field", course.field);
+        courseElement.setAttribute("data-date", course.date);
+        courseElement.setAttribute("data-type", course.type);
+        
+        courseElement.innerHTML = `
+            <img src="${course.image}" alt="${course.title}">
+            <h3>${course.title}</h3>
+            <p>المدة: ${course.duration}</p>
+            <p>يبدأ من ${course.date}</p>
+            <div class="details">
+                <span class="doctor">${course.doctor}</span>
+                <span class="rating">${course.rating}</span>
+            </div>
+            <button onclick="registerCourse('${course.title}')">تسجيل</button>
+        `;
+
+        coursesContainer.appendChild(courseElement);
+    });
+}
+
+function filterByField(field) {
+    const courses = document.querySelectorAll(".course");
+    courses.forEach(course => {
+        course.style.display = (field === "all" || course.getAttribute("data-field") === field) ? "block" : "none";
+    });
+}
+
+function filterByType() {
+    const type = document.getElementById("course-type").value;
+    const courses = document.querySelectorAll(".course");
+    courses.forEach(course => {
+        course.style.display = (type === "all" || course.getAttribute("data-type") === type) ? "block" : "none";
+    });
+}
+
+function filterByDate() {
+    const selectedDate = document.getElementById("course-date").value;
+    const courses = document.querySelectorAll(".course");
+    courses.forEach(course => {
+        course.style.display = (selectedDate === "" || course.getAttribute("data-date") === selectedDate) ? "block" : "none";
+    });
+}
+
+function searchCourses() {
+    const searchText = document.getElementById("search").value.toLowerCase();
+    const courses = document.querySelectorAll(".course");
+    courses.forEach(course => {
+        course.style.display = course.innerText.toLowerCase().includes(searchText) ? "block" : "none";
+    });
+}
+
+function registerCourse(courseName) {
+    alert(`✅ تم التسجيل في الدورة: ${courseName}`);
+}

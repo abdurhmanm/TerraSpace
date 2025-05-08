@@ -1,87 +1,154 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الملف الشخصي | تيرا سبيس</title>
+    <title>ملف الخبير الشخصي</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-gradient-to-br from-[#1a1a1a] to-[#4a4a4a] text-white min-h-screen p-6">
-    <!-- زر العودة -->
-    <a href="homeexpert.html" class="inline-flex items-center text-[#46b3e6] hover:text-[#2c6eaf] mb-6 transition-colors">
-        <i class="fas fa-arrow-right ml-2"></i>
-        العودة للرئيسية
-    </a>
-
-    <div class="max-w-7xl mx-auto">
-        <!-- معلومات الملف الشخصي -->
-        <div class="bg-[#2a2a2a] rounded-lg shadow-xl p-8 mb-8">
-            <div class="flex flex-col md:flex-row gap-8">
-                <!-- الصورة والمعلومات الأساسية -->
-                <div class="md:w-1/3 text-center">
-                    <div class="w-48 h-48 bg-[#46b3e6] rounded-full mx-auto mb-4 flex items-center justify-center text-4xl font-bold">
-                        <?php echo strtoupper(substr($expert['name'], 0, 1)); ?>
-                    </div>
-                    <h1 class="text-2xl font-bold text-[#46b3e6] mb-2"><?php echo htmlspecialchars($expert['name']); ?></h1>
-                    <p class="text-gray-400 mb-4"><?php echo htmlspecialchars($expert['email']); ?></p>
-                    <button onclick="openEditProfile()" 
-                            class="bg-[#46b3e6] text-white px-6 py-2 rounded-lg hover:bg-[#2c6eaf] transition-all">
-                        <i class="fas fa-edit ml-2"></i>
-                        تعديل الملف الشخصي
-                    </button>
-                </div>
-
-                <!-- الإحصائيات -->
-                <div class="md:w-2/3">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-[#3a3a3a] p-6 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-[#46b3e6] mb-2">
-                                <?php echo number_format($stats['total_courses']); ?>
-                            </div>
-                            <div class="text-gray-400">الدورات التدريبية</div>
-                        </div>
-                        <div class="bg-[#3a3a3a] p-6 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-[#46b3e6] mb-2">
-                                <?php echo number_format($stats['total_students']); ?>
-                            </div>
-                            <div class="text-gray-400">الطلاب المسجلين</div>
-                        </div>
-                        <div class="bg-[#3a3a3a] p-6 rounded-lg text-center">
-                            <div class="text-3xl font-bold text-[#46b3e6] mb-2">
-                                <?php echo number_format($stats['avg_rating'], 1); ?>
-                            </div>
-                            <div class="text-gray-400">متوسط التقييم</div>
-                        </div>
-                    </div>
-
-                    <!-- المهارات -->
-                    <div class="mb-8">
-                        <h2 class="text-xl font-bold text-[#46b3e6] mb-4">المهارات</h2>
-                        <div class="flex flex-wrap gap-2">
-                            <?php foreach ($skills as $skill): ?>
-                            <span class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded-full">
-                                <?php echo htmlspecialchars($skill['skill_name']); ?>
-                            </span>
-                            <?php endforeach; ?>
-                            <button onclick="addSkill()" 
-                                    class="bg-[#3a3a3a] text-[#46b3e6] px-4 py-2 rounded-full hover:bg-[#46b3e6] hover:text-white transition-all">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- نبذة شخصية -->
-                    <div>
-                        <h2 class="text-xl font-bold text-[#46b3e6] mb-4">نبذة شخصية</h2>
-                        <p class="text-gray-400">
-                            <?php echo htmlspecialchars($expert['bio'] ?? 'لا توجد نبذة شخصية بعد.'); ?>
-                        </p>
-                    </div>
-                </div>
+<body class="bg-gray-100">
+    <!-- شريط التنقل -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <a href="homeexpert.html" class="text-xl font-bold text-gray-800">تيـرا سبيس</a>
+                <a href="homeexpert.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">العودة إلى لوحة التحكم</a>
+                <a href="expert_profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-user-circle ml-1"></i>
+                    الملف الشخصي
+                </a>
+            </div>
+            <div class="hidden md:flex items-center space-x-4 space-x-reverse">
+                <a href="homeexpert.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">الرئيسية</a>
+                <a href="add_course.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">
+                    <i class="fas fa-plus-circle ml-1"></i>
+                    إضافة دورة
+                </a>
+                <a href="admin-lessons.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">
+                    <i class="fas fa-book-medical ml-1"></i>
+                    إضافة درس
+                </a>
+                <a href="course_students.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">
+                    <i class="fas fa-users ml-1"></i>
+                    إدارة الطلاب
+                </a>
+                <a href="sessions.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">جلساتي</a>
+                <a href="expert_profile.html" class="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md">
+                    <i class="fas fa-user-circle ml-1"></i>
+                    الملف الشخصي
+                </a>
+                <button onclick="logout()" class="text-red-600 hover:text-red-700 px-3 py-2 rounded-md flex items-center">
+                    <i class="fas fa-sign-out-alt ml-1"></i>
+                    تسجيل الخروج
+                </button>
             </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- المحتوى الرئيسي -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold text-gray-800 mb-6">ملف الخبير الشخصي</h1>
+            <div class="flex items-center space-x-4 space-x-reverse mb-6">
+                <div class="w-24 h-24 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span class="text-white text-3xl font-bold" id="profileInitials">--</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-800" id="expertName">اسم الخبير</h2>
+                    <p class="text-gray-600" id="expertEmail">البريد الإلكتروني</p>
+                    <p class="text-gray-600" id="expertSpecialty">التخصص</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-100 rounded-lg p-4 text-center">
+                    <h3 class="text-gray-500 text-sm">عدد الدورات</h3>
+                    <p class="text-2xl font-bold text-gray-800" id="coursesCount">0</p>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-4 text-center">
+                    <h3 class="text-gray-500 text-sm">عدد الجلسات المكتملة</h3>
+                    <p class="text-2xl font-bold text-gray-800" id="sessionsCount">0</p>
+                </div>
+                <div class="bg-gray-100 rounded-lg p-4 text-center">
+                    <h3 class="text-gray-500 text-sm">التقييم العام</h3>
+                    <p class="text-2xl font-bold text-gray-800" id="rating">0.0</p>
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <button onclick="editProfile()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                    تعديل البيانات الشخصية
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAA6y8TFRWreu6Pd1AZyqvjAEh9BX4g6_E",
+            authDomain: "teerra-space.firebaseapp.com",
+            projectId: "teerra-space",
+            storageBucket: "teerra-space.firebasestorage.app",
+            messagingSenderId: "416330751201",
+            appId: "1:416330751201:web:233fb1abc5771548fe2ba0"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // تحميل بيانات الخبير
+        async function loadExpertProfile() {
+            try {
+                const user = auth.currentUser;
+                if (!user) {
+                    window.location.replace('login.html');
+                    return;
+                }
+
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+
+                    // تحديث البيانات في الصفحة
+                    document.getElementById('expertName').textContent = `${userData.firstName || ''} ${userData.lastName || ''}`;
+                    document.getElementById('expertEmail').textContent = userData.email || 'غير متوفر';
+                    document.getElementById('expertSpecialty').textContent = userData.specialty || 'غير محدد';
+                    document.getElementById('profileInitials').textContent = `${(userData.firstName || '').charAt(0)}${(userData.lastName || '').charAt(0)}`.toUpperCase();
+
+                    // جلب عدد الدورات
+                    const coursesSnapshot = await db.collection('courses').where('expertId', '==', user.uid).get();
+                    document.getElementById('coursesCount').textContent = coursesSnapshot.size;
+
+                    // جلب عدد الجلسات المكتملة
+                    const sessionsSnapshot = await db.collection('sessions').where('expertId', '==', user.uid).where('status', '==', 'completed').get();
+                    document.getElementById('sessionsCount').textContent = sessionsSnapshot.size;
+
+                    // جلب التقييم العام
+                    const rating = userData.rating || 0;
+                    document.getElementById('rating').textContent = rating.toFixed(1);
+                }
+            } catch (error) {
+                console.error('Error loading expert profile:', error);
+                alert('حدث خطأ أثناء تحميل بيانات الملف الشخصي.');
+            }
+        }
+
+        // تعديل البيانات الشخصية
+        function editProfile() {
+            window.location.href = 'edit_profile.html';
+        }
+
+        // التحقق من حالة تسجيل الدخول وتحميل البيانات
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                loadExpertProfile();
+            } else {
+                window.location.replace('login.html');
+            }
+        });
+    </script>
 </body>
 </html>
